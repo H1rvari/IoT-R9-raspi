@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{3947DD77-13E0-3565-9E63-A7F780DE62A5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

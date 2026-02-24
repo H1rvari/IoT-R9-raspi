@@ -1,0 +1,10 @@
+^C:\USERS\HIRVIJÄRVI\DESKTOP\KURSSIT\IOT\IOT-R9-RASPI\BUILD\CMAKEFILES\663EA3347930C449B999B93000433688\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi -BC:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/IoT-R9-raspi.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

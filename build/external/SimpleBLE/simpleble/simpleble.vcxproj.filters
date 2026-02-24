@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\base\Advanced.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\base\Adapter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\base\Peripheral.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\base\Service.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\base\Characteristic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\base\Descriptor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\base\Backend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\common\AdapterBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\common\ServiceBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\common\CharacteristicBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\common\DescriptorBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\Config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\Exceptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\Logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\safe\AdapterSafe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\frontends\safe\PeripheralSafe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\windows\AdapterWindows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\windows\PeripheralWindows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\windows\BackendWinRT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\windows\MtaManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\windows\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\usb\UsbHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\BackendDongl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\AdapterDongl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\PeripheralDongl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\serial\Protocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\serial\ProtocolBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\serial\Wire.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\dependencies\internal\src\nanopb\pb_common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\dependencies\internal\src\nanopb\pb_decode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\dependencies\internal\src\nanopb\pb_encode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\protocol\d2h.pb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\protocol\h2d.pb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\protocol\basic.pb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\protocol\simpleble.pb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\src\backends\dongl\usb\UsbHelperWindows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\external\SimpleBLE\simpleble\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{3947DD77-13E0-3565-9E63-A7F780DE62A5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

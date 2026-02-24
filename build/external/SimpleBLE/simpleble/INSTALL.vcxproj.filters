@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Hirvijärvi\Desktop\Kurssit\IOT\IoT-R9-raspi\build\CMakeFiles\a38d996dd5dd54fa7656ba758219a448\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{CA678BAE-9750-3926-8910-B1D566B77645}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
