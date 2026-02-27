@@ -71,13 +71,14 @@ void request_handler(SimpleBLE::ByteArray req, device_type type){
 }
 
 bool ble_init(){
-
+   
    if (!SimpleBLE::Adapter::bluetooth_enabled()) {
       std::cout << "Bluetooth is not enabled" << std::endl;
       return false;
    }
-
+   std::cout << "---\n";
    auto adapters = SimpleBLE::Adapter::get_adapters();
+   std::cout << "---\n";
    if (adapters.empty()) {
       std::cout << "No Bluetooth adapters found" << std::endl;
       return false;
