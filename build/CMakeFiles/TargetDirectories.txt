@@ -1,7 +1,0 @@
-C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/CMakeFiles/IoT-R9-raspi.dir
-C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/CMakeFiles/INSTALL.dir
-C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/CMakeFiles/ZERO_CHECK.dir
-C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/external/SimpleBLE/simpleble/CMakeFiles/simpleble.dir
-C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/external/SimpleBLE/simpleble/CMakeFiles/INSTALL.dir
-C:/Users/Hirvijärvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/external/SimpleBLE/simpleble/CMakeFiles/ALL_BUILD.dir
