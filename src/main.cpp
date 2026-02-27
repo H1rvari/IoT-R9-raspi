@@ -1,6 +1,7 @@
 #include <simpleble/SimpleBLE.h>
 #include <iostream>
 #include <vector>
+#include <unistd.h>
 
 #define REMOTE_UUID "placeholder"
 #define SENSOR_UUID "placeholder"
@@ -26,7 +27,7 @@ void request_handler(SimpleBLE::ByteArray req, device_type type);
 
 
 SimpleBLE::Adapter adapter;
-SimpleBLE::Peripheral* remote;
+SimpleBLE::Peripheral* remote = nullptr;
 std::vector<SimpleBLE::Peripheral*> sensors = {};
 
 void connect_device(SimpleBLE::Peripheral pref){
@@ -41,17 +42,27 @@ void connect_device(SimpleBLE::Peripheral pref){
 
          if (pref_type == REMOTE){
             remote = pref_ptr;
+            pref_ptr->set_callback_on_disconnected([remote](){delete remote; remote = nullptr;});
          }
          else if (pref_type == SENSOR){
             sensors.push_back(pref_ptr);
+            pref_ptr->set_callback_on_disconnected([pref_ptr](){delete pref_ptr; sensor_disconnect_handler(pref_ptr);});
          }
          else {
-            std::cout << "This should never happen\n";
+            delete pref_ptr;
+            continue;
          }
+         pref_ptr->connect();
+         pref_ptr->set_callback_on_disconnected([pref_ptr](){delete pref_ptr;});
          pref_ptr->indicate(pref_ptr->address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+
       }
    }
 
+}
+
+void sensor_disconnect_handler(SimpleBLE::Peripheral* pref){
+   std::cout << "Sensor disconnect handler reached!\n";
 }
 
 void request_handler(SimpleBLE::ByteArray req, device_type type){
@@ -74,6 +85,7 @@ bool ble_init(){
    adapter = adapters[0];
 
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
+   adapter.scan_start();
    
    return true;
 }
@@ -82,8 +94,11 @@ int main() {
     
    if (!ble_init()) return EXIT_FAILURE;
 
-
+   std::cout << "initialization successful\n";
    
-   return EXIT_SUCCESS;
+   while(true){
+      sleep(1);
+      std::cout << "Here some status update in the future\n";
+   }
 
 }
