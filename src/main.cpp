@@ -24,6 +24,7 @@ device_model expected_devices[] = {
 
 void connect_device(SimpleBLE::Peripheral pref);
 void request_handler(SimpleBLE::ByteArray req, device_type type);
+void sensor_disconnect_handler(SimpleBLE::Peripheral* pref);
 
 
 SimpleBLE::Adapter adapter;
@@ -37,12 +38,12 @@ void connect_device(SimpleBLE::Peripheral pref){
       if (expected_devices[i].device_id  == pref.address()){
 
          pref_ptr = new SimpleBLE::Peripheral;
-         pref_ptr = &pref;
+         *pref_ptr = pref;
          device_type pref_type = expected_devices[i].type;
 
          if (pref_type == REMOTE){
             remote = pref_ptr;
-            pref_ptr->set_callback_on_disconnected([remote](){delete remote; remote = nullptr;});
+            pref_ptr->set_callback_on_disconnected([pref_ptr](){delete pref_ptr; remote = nullptr;});
          }
          else if (pref_type == SENSOR){
             sensors.push_back(pref_ptr);
