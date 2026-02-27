@@ -83,6 +83,10 @@ bool ble_init(){
       return false;
    }
 
+   for (auto nig : adapters){
+      std::cout << "Adapter found: " << nig.identifier() << "\n";
+   }
+
    adapter = adapters[0];
 
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
