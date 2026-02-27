@@ -54,7 +54,9 @@ void connect_device(SimpleBLE::Peripheral pref){
 
 }
 
-//void request_handler(SimpleBLE::ByteArray req, device_type type){}
+void request_handler(SimpleBLE::ByteArray req, device_type type){
+   std::cout << "Request handler reached!\n";
+}
 
 bool ble_init(){
 
