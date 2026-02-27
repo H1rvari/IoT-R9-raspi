@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"C:/Users/Hirvij\u00e4rvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/cmake_install.cmake",
-		"C:/Users/Hirvij\u00e4rvi/Desktop/Kurssit/IOT/IoT-R9-raspi/build/external/SimpleBLE/simpleble/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
