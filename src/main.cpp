@@ -86,11 +86,6 @@ bool ble_init(){
       std::cout << "No Bluetooth adapters found" << std::endl;
       return false;
    }
-   
-
-   for (auto nig : adapters){
-      std::cout << "Adapter found: " << nig.identifier() << std::endl;
-   }
 
    adapter = adapters[0];
 
@@ -104,6 +99,11 @@ bool ble_init(){
 int main() {
 
    auto adapters = SimpleBLE::Adapter::get_adapters();
+   for (auto nig : adapters){
+      std::cout << "Adapter found: " << nig.identifier() << std::endl;
+   }
+
+   //adapter = adapters[0];
    return 0;
    /*
    if (!ble_init()) return EXIT_FAILURE;
