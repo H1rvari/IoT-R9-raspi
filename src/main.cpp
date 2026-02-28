@@ -113,6 +113,11 @@ int main() {
    if (!ble_init()) return EXIT_FAILURE;
 
    std::cout << "initialization successful" << std::endl;
+
+   while (!adapter.initialized()) {
+      sleep(1)
+      std::cout << "not initialized" << std::endl;
+   };
    
    while(true){
       adapter.scan_for(2000);
