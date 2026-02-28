@@ -76,24 +76,28 @@ bool ble_init(){
       std::cout << "Bluetooth is not enabled" << std::endl;
       return false;
    }
-   std::cout << "---\n";
+  
    auto adapters = SimpleBLE::Adapter::get_adapters();
-   std::cout << "---\n";
+   
    if (adapters.empty()) {
       std::cout << "No Bluetooth adapters found" << std::endl;
       return false;
    }
 
    for (auto nig : adapters){
-      std::cout << "Adapter found: " << nig.identifier() << "\n";
+      std::cout << "Adapter found: " << nig.identifier() << std::endl;
    }
 
-   adapter = adapters[1];
+   std::cout << "Works so far\n";
+   return false;
+/*
+   adapter = adapters[0];
 
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
    adapter.scan_start();
    
    return true;
+   */
 }
 
 int main() {
