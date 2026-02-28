@@ -115,7 +115,7 @@ int main() {
    std::cout << "initialization successful" << std::endl;
 
    while (!adapter.initialized()) {
-      sleep(1)
+      sleep(1);
       std::cout << "not initialized" << std::endl;
    };
    
