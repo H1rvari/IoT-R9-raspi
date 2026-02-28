@@ -76,7 +76,9 @@ bool ble_init(){
       std::cout << "Bluetooth is not enabled" << std::endl;
       return false;
    }
-  
+   std::cout << "Works so far\n";
+   return false;
+  /*
    auto adapters = SimpleBLE::Adapter::get_adapters();
    
    if (adapters.empty()) {
@@ -88,9 +90,8 @@ bool ble_init(){
       std::cout << "Adapter found: " << nig.identifier() << std::endl;
    }
 
-   std::cout << "Works so far\n";
    return false;
-/*
+
    adapter = adapters[0];
 
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
