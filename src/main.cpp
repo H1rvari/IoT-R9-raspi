@@ -93,12 +93,12 @@ bool ble_init(){
       }
    }
    if (!adapter_found){
-      std::cout << "The correct adapter not found\n";
+      std::cout << "The correct adapter not found" << std::endl;
       return false;
    }
-
-   adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
-   adapter.scan_start();
+   
+   // adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
+   // adapter.scan_start();
    
    return true;
    
@@ -109,7 +109,7 @@ int main() {
    
    if (!ble_init()) return EXIT_FAILURE;
 
-   std::cout << "initialization successful\n";
+   std::cout << "initialization successful" << std::endl;
    
    while(true){
       sleep(1);
