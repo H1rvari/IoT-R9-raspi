@@ -29,7 +29,7 @@ void request_handler(SimpleBLE::ByteArray req, device_type type);
 void sensor_disconnect_handler(SimpleBLE::Peripheral* pref);
 
 
-SimpleBLE::Adapter adapter = NULL;
+SimpleBLE::Adapter adapter;
 SimpleBLE::Peripheral* remote = nullptr;
 std::vector<SimpleBLE::Peripheral*> sensors = {};
 
@@ -85,13 +85,13 @@ bool ble_init(){
    
    
    for (auto ad : adapters){
-      std::cout << "Adapter found: " << ad.indentifier(); << std::endl;
-      if (ad.identifier == ADAPTER_ID){
+      std::cout << "Adapter found: " << ad.identifier(); << std::endl;
+      if (ad.identifier() == ADAPTER_ID){
          adapter = ad;
          break;
       }
    }
-   if (adapter == NULL){
+   if (!adapter){
       std::cout << "The correct adapter not found\n";
       return false;
    }
