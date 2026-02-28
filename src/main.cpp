@@ -112,7 +112,8 @@ int main() {
    std::cout << "initialization successful" << std::endl;
    
    while(true){
-      sleep(1);
+      adapter.scan_for(2000);
+      //sleep(1);
       std::cout << "Here some status update in the future\n";
    }
    return EXIT_SUCCESS;
