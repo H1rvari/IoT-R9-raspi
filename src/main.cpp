@@ -98,6 +98,9 @@ bool ble_init(){
    }
    
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
+   adapter.set_callback_on_scan_start([]() { std::cout << "Scan started." << std::endl; });
+   adapter.set_callback_on_scan_stop([]() { std::cout << "Scan stopped." << std::endl; });
+   adapter.power_on();
    //adapter.scan_start();
    
    return true;
@@ -112,7 +115,7 @@ int main() {
    std::cout << "initialization successful" << std::endl;
    
    while(true){
-      adapter.scan_for(2000);
+      adapter.scan_for(2000)
       //sleep(1);
       std::cout << "Here some status update in the future\n";
    }
