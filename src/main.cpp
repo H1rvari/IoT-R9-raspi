@@ -97,8 +97,8 @@ bool ble_init(){
       return false;
    }
    
-   // adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
-   // adapter.scan_start();
+   adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
+   adapter.scan_start();
    
    return true;
    
