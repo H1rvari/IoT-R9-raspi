@@ -3,6 +3,8 @@
 #include <vector>
 #include <unistd.h>
 
+#define ADAPTER_ID = "hci0"
+
 #define REMOTE_UUID "placeholder"
 #define SENSOR_UUID "placeholder"
 
@@ -27,7 +29,7 @@ void request_handler(SimpleBLE::ByteArray req, device_type type);
 void sensor_disconnect_handler(SimpleBLE::Peripheral* pref);
 
 
-SimpleBLE::Adapter adapter;
+SimpleBLE::Adapter adapter = NULL;
 SimpleBLE::Peripheral* remote = nullptr;
 std::vector<SimpleBLE::Peripheral*> sensors = {};
 
@@ -82,30 +84,28 @@ bool ble_init(){
    auto adapters = SimpleBLE::Adapter::get_adapters();
    
    
-   if (adapters.empty()) {
-      std::cout << "No Bluetooth adapters found" << std::endl;
+   for (auto ad : adapters){
+      std::cout << "Adapter found: " << ad.indentifier(); << std::endl;
+      if (ad.identifier == ADAPTER_ID){
+         adapter = ad;
+         break;
+      }
+   }
+   if (adapter == NULL){
+      std::cout << "The correct adapter not found\n";
       return false;
    }
-
-   adapter = adapters[0];
 
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
    adapter.scan_start();
    
-   return false;
+   return true;
    
 }
 
 int main() {
 
-   auto adapters = SimpleBLE::Adapter::get_adapters();
-   for (auto nig : adapters){
-      std::cout << "Adapter found: " << nig.identifier() << std::endl;
-   }
-
-   //adapter = adapters[0];
-   return 0;
-   /*
+   
    if (!ble_init()) return EXIT_FAILURE;
 
    std::cout << "initialization successful\n";
@@ -114,6 +114,6 @@ int main() {
       sleep(1);
       std::cout << "Here some status update in the future\n";
    }
-      */
+   return EXIT_SUCCESS;
 
 }
