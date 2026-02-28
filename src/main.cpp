@@ -3,7 +3,7 @@
 #include <vector>
 #include <unistd.h>
 
-#define ADAPTER_ID = "hci0"
+#define ADAPTER_ID "hci0"
 
 #define REMOTE_UUID "placeholder"
 #define SENSOR_UUID "placeholder"
@@ -83,15 +83,16 @@ bool ble_init(){
   
    auto adapters = SimpleBLE::Adapter::get_adapters();
    
-   
+   bool adapter_found = false;
    for (auto ad : adapters){
-      std::cout << "Adapter found: " << ad.identifier(); << std::endl;
+      std::cout << "Adapter found: " << ad.identifier() << std::endl;
       if (ad.identifier() == ADAPTER_ID){
          adapter = ad;
+         adapter_found = true;
          break;
       }
    }
-   if (!adapter){
+   if (!adapter_found){
       std::cout << "The correct adapter not found\n";
       return false;
    }
