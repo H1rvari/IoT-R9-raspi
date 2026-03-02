@@ -34,6 +34,9 @@ SimpleBLE::Adapter adapter;
 SimpleBLE::Peripheral remote;
 SimpleBLE::Peripheral sensor;
 
+bool remote_initialized = false;
+bool sensor_initialized = false;
+
 bool is_active = false;
 bool is_armed = false;
 bool alarm_on = false;
@@ -49,11 +52,13 @@ void connect_device(SimpleBLE::Peripheral pref){
    if (pref.address() == REMOTE_UUID){
       remote = pref;
       pref_type = REMOTE;
+      remote_initialized = true;
    }
    else if (pref.address() == SENSOR_UUID){
       sensor = pref;
       pref_type = SENSOR;
       is_active = true;
+      sensor_initialized = true;
    }
    else{
       std::cout << "invalid UUID: " << pref.address() << "\n";
@@ -193,11 +198,14 @@ int main() {
       state_alarm = alarm_on ? "alarm active" : "alarm not active";
       std::cout << "Current state:    " << state_active << "    " << state_armed << "    " << state_alarm << "\n";
 
-      if (adapter.scan_is_active() && (remote.is_connected() && sensor.is_connected())){
-         adapter.scan_stop();
-      }
-      else if (!adapter.scan_is_active() && !(remote.is_connected() && sensor.is_connected())){
-         adapter.scan_start();
+
+      if (sensor_initialized && remote_initialized){
+         if (adapter.scan_is_active() && (remote.is_connected() && sensor.is_connected())){
+            adapter.scan_stop();
+         }
+         else if (!adapter.scan_is_active() && !(remote.is_connected() && sensor.is_connected())){
+            adapter.scan_start();
+         }
       }
    }
    return EXIT_SUCCESS;
