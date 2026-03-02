@@ -142,7 +142,6 @@ void request_handler(SimpleBLE::ByteArray req, device_type type){
       update_actuator();
 
    }
-
 }
 
 bool ble_init(){
@@ -190,6 +189,8 @@ int main() {
    std::string state_active;
    std::string state_armed;
    std::string state_alarm;
+
+   update_actuator();
    
    while(true){
       sleep(1);
@@ -197,7 +198,6 @@ int main() {
       state_armed = is_armed ? "device armed" : "device not armed";
       state_alarm = alarm_on ? "alarm active" : "alarm not active";
       std::cout << "Current state:    " << state_active << "    " << state_armed << "    " << state_alarm << "\n";
-
 
       if (sensor_initialized && remote_initialized){
          if (adapter.scan_is_active() && (remote.is_connected() && sensor.is_connected())){
