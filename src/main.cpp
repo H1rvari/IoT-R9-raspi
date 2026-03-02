@@ -44,33 +44,33 @@ void connect_device(SimpleBLE::Peripheral pref){
    std::cout << "Device found\n";
 
    device_type pref_type;
-   switch(pref.address()){
-      case REMOTE_UUID:
-         remote = pref;
-         pref_type = REMOTE;
-         break;
-      case SENSOR_UUID:
-         sensor = pref;
-         pref_type = SENSOR;
-         is_active = true;
-         break;
-      default:
-         std::cout << "invalid UUID: " << pref.address(); << "\n";
-         return;
-   }
-   
-   std::cout << "Device conneccted\n";
 
-   pref_ptr.connect();
-   pref_ptr.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
-   pref_ptr.indicate(pref_ptr->address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+
+   if (pref.address() == REMOTE_UUID){
+      remote = pref;
+      pref_type = REMOTE;
+   }
+   else if (pref.address() == SENSOR_UUID){
+      sensor = pref;
+      pref_type = SENSOR;
+      is_active = true;
+   }
+   else{
+      std::cout << "invalid UUID: " << pref.address() << "\n";
+      return;
+   }
+
+   pref.connect();
+   pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
+   pref.indicate(pref_ptr->address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+   std::cout << "Device conneccted\n";
 
 }
 
 void broadcast_state(){
-   std::cout << "Broadcasting state:\n"
+   std::cout << "Broadcasting state:\n";
    std::vector<uint8_t> data_out = {is_active, is_armed, alarm_on};
-   remote.write_command(SERVICE_ID, CHAR_ID, bytearray(&data_out));
+   remote.write_command(SERVICE_ID, CHAR_ID, kvn::bytearray(data_out));
 }
 
 void update_actuator(){
@@ -98,7 +98,7 @@ void disconnect_handler(device_type type){
       std::cout << "Remote disconnected\n";
    }
    else {
-      std::cout << "Error: invalid device type in disconnect handler\n"
+      std::cout << "Error: invalid device type in disconnect handler\n";
    }
 }
 
