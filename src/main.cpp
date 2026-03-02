@@ -9,8 +9,7 @@
 #define SENSOR_UUID "placeholder"
 
 #define CHAR_ID "placeholder"
-
-#define EXPECTED_DEVICES 2
+#define SERVICE_ID "placeholder"
 
 typedef enum {REMOTE, SENSOR} device_type;
 
@@ -28,6 +27,7 @@ void connect_device(SimpleBLE::Peripheral pref);
 void request_handler(SimpleBLE::ByteArray req, device_type type);
 void disconnect_handler(device_type type);
 void update_actuator();
+void broadcast_state();
 
 
 SimpleBLE::Adapter adapter;
@@ -46,9 +46,11 @@ void connect_device(SimpleBLE::Peripheral pref){
    device_type pref_type;
    switch(pref.address()){
       case REMOTE_UUID:
+         remote = pref;
          pref_type = REMOTE;
          break;
       case SENSOR_UUID:
+         sensor = pref;
          pref_type = SENSOR;
          is_active = true;
          break;
@@ -65,18 +67,38 @@ void connect_device(SimpleBLE::Peripheral pref){
 
 }
 
-void update_acturator(){
-   std::cout << "Actuator controller reached\n";
+void broadcast_state(){
+   std::cout << "Broadcasting state:\n"
+   std::vector<uint8_t> data_out = {is_active, is_armed, alarm_on};
+   remote.write_command(SERVICE_ID, CHAR_ID, bytearray(&data_out));
+}
+
+void update_actuator(){
+   std::cout << "Alarm is set to " << alarm_on ? "active" : "inactive" << "\n";
 }
 
 void disconnect_handler(device_type type){
-   std::cout << "Sensor disconnect handler reached!\n";
+   
+   if (type == SENSOR){
+      is_active = false;
+      is_armed = false;
+      alarm_on = false;
+      if  (remote.is_connected()){
+         broadcast_state();
+      }
+      std::cout << "Sensor disconnected\n";
+   }
+   else if (type == REMOTE) {
+      std::cout << "Remote disconnected\n";
+   }
+   else {
+      std::cout "Error: invalid device type in disconnect handler\n"
+   }
 }
 
 void request_handler(SimpleBLE::ByteArray req, device_type type){
    
    uint8_t data_in = req[0];
-   std::vector<uint8_t> data_out;
 
    if (data_in != ~0x00){
       std::cout << "Invalid input data: " << data_in << "\n";
@@ -103,10 +125,9 @@ void request_handler(SimpleBLE::ByteArray req, device_type type){
          }
 
       }
-      data_out.append(is_active);
-      data_out.append(is_armed);
-      data_out.append(alarm_on);
-      // TODO broadcat state to renote
+      if (remote.is_connected()){
+         broadcast_state();
+      }
       update_actuator();
 
    }
@@ -155,15 +176,19 @@ int main() {
 
    std::cout << "initialization successful" << std::endl;
 
-   while (!adapter.initialized()) {
-      sleep(1);
-      std::cout << "not initialized" << std::endl;
-   };
    
    while(true){
       sleep(1);
-      std::cout << "Here some status update in the future\n";
+      std::cout << "Current state:\n"
+            << is_active ? "device active" : "device inactive" << "\n"
+            << is_armed ? "device armed" : "device not armed" << "\n"
+            << alarm_on ? "alarm active" : "alarm not active" << "\n\n";
+      if (scan_is_active() && (remote.is_connected() && sensor.is_connected())){
+         adapter.scan_stop();
+      }
+      else if (!scan_is_active() && !(remote.is_connected() && sensor.is_connected())){
+         adapter.scan_start();
+      }
    }
    return EXIT_SUCCESS;
-
 }
