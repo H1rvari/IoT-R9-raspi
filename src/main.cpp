@@ -26,60 +26,101 @@ device_model expected_devices[] = {
 
 void connect_device(SimpleBLE::Peripheral pref);
 void request_handler(SimpleBLE::ByteArray req, device_type type);
-void sensor_disconnect_handler(SimpleBLE::Peripheral* pref);
+void disconnect_handler(device_type type);
+void update_actuator();
 
 
 SimpleBLE::Adapter adapter;
-SimpleBLE::Peripheral* remote = nullptr;
-std::vector<SimpleBLE::Peripheral*> sensors = {};
+SimpleBLE::Peripheral remote;
+SimpleBLE::Peripheral sensor;
+
+bool is_active = false;
+bool is_armed = false;
+bool alarm_on = false;
+
 
 void connect_device(SimpleBLE::Peripheral pref){
 
-   SimpleBLE::Peripheral* pref_ptr;
-   for (int i = 0 ; i < EXPECTED_DEVICES ; i++){
-      if (expected_devices[i].device_id  == pref.address()){
+   std::cout << "Device found\n";
 
-         pref_ptr = new SimpleBLE::Peripheral;
-         *pref_ptr = pref;
-         device_type pref_type = expected_devices[i].type;
-
-         if (pref_type == REMOTE){
-            remote = pref_ptr;
-            pref_ptr->set_callback_on_disconnected([pref_ptr](){delete pref_ptr; remote = nullptr;});
-         }
-         else if (pref_type == SENSOR){
-            sensors.push_back(pref_ptr);
-            pref_ptr->set_callback_on_disconnected([pref_ptr](){delete pref_ptr; sensor_disconnect_handler(pref_ptr);});
-         }
-         else {
-            delete pref_ptr;
-            continue;
-         }
-         pref_ptr->connect();
-         pref_ptr->set_callback_on_disconnected([pref_ptr](){delete pref_ptr;});
-         pref_ptr->indicate(pref_ptr->address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
-
-      }
+   device_type pref_type;
+   switch(pref.address()){
+      case REMOTE_UUID:
+         pref_type = REMOTE;
+         break;
+      case SENSOR_UUID:
+         pref_type = SENSOR;
+         is_active = true;
+         break;
+      default:
+         std::cout << "invalid UUID: " << pref.address(); << "\n";
+         return;
    }
+   
+   std::cout << "Device conneccted\n";
+
+   pref_ptr.connect();
+   pref_ptr.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
+   pref_ptr.indicate(pref_ptr->address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
 
 }
 
-void sensor_disconnect_handler(SimpleBLE::Peripheral* pref){
+void update_acturator(){
+   std::cout << "Actuator controller reached\n";
+}
+
+void disconnect_handler(device_type type){
    std::cout << "Sensor disconnect handler reached!\n";
 }
 
 void request_handler(SimpleBLE::ByteArray req, device_type type){
-   std::cout << "Request handler reached!\n";
+   
+   uint8_t data_in = req[0];
+   std::vector<uint8_t> data_out;
+
+   if (data_in != ~0x00){
+      std::cout << "Invalid input data: " << data_in << "\n";
+      return;
+   }
+   if (type == SENSOR){
+      if (is_active && is_armed){
+         alarm_on = true;
+      }
+   }
+   else if (type == REMOTE){
+      
+      if (!is_active){
+         is_armed = false;
+         alarm_on = false;
+      }
+      else {
+         if (is_armed){
+            is_armed = false;
+            alarm_on = false;
+         }
+         else {
+            is_armed = true;
+         }
+
+      }
+      data_out.append(is_active);
+      data_out.append(is_armed);
+      data_out.append(alarm_on);
+      // TODO broadcat state to renote
+      update_actuator();
+
+   }
+
 }
 
 bool ble_init(){
    
-   /*
+   
    if (!SimpleBLE::Adapter::bluetooth_enabled()) {
       std::cout << "Bluetooth is not enabled" << std::endl;
       return false;
    }
-   */
+   
   
    auto adapters = SimpleBLE::Adapter::get_adapters();
    
@@ -101,7 +142,7 @@ bool ble_init(){
    adapter.set_callback_on_scan_start([]() { std::cout << "Scan started." << std::endl; });
    adapter.set_callback_on_scan_stop([]() { std::cout << "Scan stopped." << std::endl; });
    adapter.power_on();
-   //adapter.scan_start();
+   adapter.scan_start();
    
    return true;
    
@@ -120,8 +161,7 @@ int main() {
    };
    
    while(true){
-      adapter.scan_for(2000);
-      //sleep(1);
+      sleep(1);
       std::cout << "Here some status update in the future\n";
    }
    return EXIT_SUCCESS;
