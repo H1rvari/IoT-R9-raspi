@@ -62,7 +62,7 @@ void connect_device(SimpleBLE::Peripheral pref){
 
    pref.connect();
    pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
-   pref.indicate(pref_ptr->address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+   pref.indicate(pref.address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
    std::cout << "Device conneccted\n";
 
 }
