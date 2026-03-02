@@ -74,7 +74,13 @@ void broadcast_state(){
 }
 
 void update_actuator(){
-   std::cout << "Alarm is set to " << alarm_on ? "active" : "inactive" << "\n";
+   std::cout << "Alarm is set to ";
+   if (alarm_on){
+      std::cout << "on\n";
+   }
+   else {
+      std::cout << "off\n";
+   }
 }
 
 void disconnect_handler(device_type type){
@@ -92,7 +98,7 @@ void disconnect_handler(device_type type){
       std::cout << "Remote disconnected\n";
    }
    else {
-      std::cout "Error: invalid device type in disconnect handler\n"
+      std::cout << "Error: invalid device type in disconnect handler\n"
    }
 }
 
@@ -176,17 +182,21 @@ int main() {
 
    std::cout << "initialization successful" << std::endl;
 
+   std::string state_active;
+   std::string state_armed;
+   std::string state_alarm;
    
    while(true){
       sleep(1);
-      std::cout << "Current state:\n"
-            << is_active ? "device active" : "device inactive" << "\n"
-            << is_armed ? "device armed" : "device not armed" << "\n"
-            << alarm_on ? "alarm active" : "alarm not active" << "\n\n";
-      if (scan_is_active() && (remote.is_connected() && sensor.is_connected())){
+      state_active = is_active ? "device active" : "device inactive";
+      state_armed = is_armed ? "device armed" : "device not armed";
+      state_alarm = alarm_on ? "alarm active" : "alarm not active";
+      std::cout << "Current state:    " << state_active << "    " << state_armed << "    " << state_alarm << "\n";
+
+      if (adapter.scan_is_active() && (remote.is_connected() && sensor.is_connected())){
          adapter.scan_stop();
       }
-      else if (!scan_is_active() && !(remote.is_connected() && sensor.is_connected())){
+      else if (!adapter.scan_is_active() && !(remote.is_connected() && sensor.is_connected())){
          adapter.scan_start();
       }
    }
