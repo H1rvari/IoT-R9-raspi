@@ -1,4 +1,5 @@
 #include <simpleble/SimpleBLE.h>
+#include <gpiod.hpp>
 #include <iostream>
 #include <vector>
 #include <unistd.h>
@@ -8,8 +9,11 @@
 #define REMOTE_UUID "placeholder"
 #define SENSOR_UUID "placeholder"
 
-#define CHAR_ID "placeholder"
-#define SERVICE_ID "placeholder"
+#define CHAR_ID "4429945c5ba54627bb532f09089e59a7"
+#define SERVICE_ID "538437edfb424103a9e7f17634200e3b"
+
+#define CHIP_NAME "gpiochip0"
+#define CHIP_PIN_NUM 23
 
 typedef enum {REMOTE, SENSOR} device_type;
 
@@ -65,9 +69,20 @@ void connect_device(SimpleBLE::Peripheral pref){
       return;
    }
 
-   pref.connect();
-   pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
-   pref.indicate(pref.address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+   try {
+      pref.connect();
+   } catch (const std::exception& e){
+      std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
+      return;
+   }
+
+   try {
+      pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
+      pref.indicate(pref.address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+   } catch (const std::exception& e){
+      std::cout << "UUID matched but initialization failed:\n" << e.what() << std::endl;
+      return;
+   }
    std::cout << "Device conneccted\n";
 
 }
@@ -137,7 +152,12 @@ void request_handler(SimpleBLE::ByteArray req, device_type type){
 
       }
       if (remote.is_connected()){
-         broadcast_state();
+         try {
+            broadcast_state();
+         } catch (const std::exception& e){
+            std::cout << "failed to broadcast state to remote despite being connected:\n" << e.what() << std::endl;
+         }
+
       }
       update_actuator();
 
@@ -181,8 +201,13 @@ bool ble_init(){
 
 int main() {
 
-   
    if (!ble_init()) return EXIT_FAILURE;
+
+
+
+   gpiod::chip chip(CHIP_NAME);
+   gpiod::line led_pin = chip.get_line(CHIP_PIN_NUM);
+   bool led_on = false;
 
    std::cout << "initialization successful" << std::endl;
 
@@ -207,6 +232,8 @@ int main() {
             adapter.scan_start();
          }
       }
+      led_on = !led_on;
+      led_pin.set_value(led_on);
    }
    return EXIT_SUCCESS;
 }
