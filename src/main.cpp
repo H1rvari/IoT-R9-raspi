@@ -1,6 +1,5 @@
 #include <simpleble/SimpleBLE.h>
 #include <gpiod.hpp>
-#include <gpiod.h>
 #include <iostream>
 #include <vector>
 #include <unistd.h>
@@ -207,7 +206,7 @@ int main() {
 
 
    gpiod::chip chip(CHIP_NAME);
-   
+
    gpiod::line_settings settings;
    settings.set_direction(gpiod::line_direction::OUTPUT);
 
