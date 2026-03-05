@@ -203,22 +203,6 @@ int main() {
 
    if (!ble_init()) return EXIT_FAILURE;
 
-
-
-   gpiod::chip chip(CHIP_NAME);
-
-   gpiod::line_settings settings;
-   settings.set_direction(gpiod::line_direction::OUTPUT);
-
-   gpiod::request_config config;
-   config.set_consumer("led-test");
-
-   gpiod::line_config line_cfg;
-   line_cfg.add_line_settings({CHIP_PIN_NUM}, settings);
-
-   auto request = chip.request_lines(config, line_cfg);
-   bool led_on = false;
-
    std::cout << "initialization successful" << std::endl;
 
    std::string state_active;
@@ -242,8 +226,6 @@ int main() {
             adapter.scan_start();
          }
       }
-      led_on = !led_on;
-      request.set_value(CHIP_PIN_NUM, led_on);
    }
    return EXIT_SUCCESS;
 }
