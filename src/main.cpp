@@ -1,5 +1,6 @@
 #include <simpleble/SimpleBLE.h>
 #include <gpiod.hpp>
+#include <gpiod.h>
 #include <iostream>
 #include <vector>
 #include <unistd.h>
