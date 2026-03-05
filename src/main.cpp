@@ -207,14 +207,12 @@ int main() {
 
 
    gpiod::chip chip(CHIP_NAME);
-   gpiod::line led_pin = chip.get_line(CHIP_PIN_NUM);
-   bool led_on = false;
+   gpiod::line_settings.set_direction(gpiod::line_direction::OUTPUT);
+   gpiod::request_config.set_consumer("alarm-actuator");
+   gpiod::line_config.add_line_settings({CHIP_PIN_NUM}, settings);
 
-   led_pin.request({
-        "output_led",
-        gpiod::line_request::DIRECTION_OUTPUT,
-        0
-    });
+   auto request = chip.request_lines(config, line_cfg);
+   bool led_on = false;
 
    std::cout << "initialization successful" << std::endl;
 
@@ -240,7 +238,7 @@ int main() {
          }
       }
       led_on = !led_on;
-      led_pin.set_value(led_on);
+      request.set_value(CHIP_PIN_NUM, led_on);
    }
    return EXIT_SUCCESS;
 }
