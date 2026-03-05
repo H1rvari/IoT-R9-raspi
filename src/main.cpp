@@ -207,9 +207,15 @@ int main() {
 
 
    gpiod::chip chip(CHIP_NAME);
-   gpiod::line_settings.set_direction(gpiod::line_direction::OUTPUT);
-   gpiod::request_config.set_consumer("alarm-actuator");
-   gpiod::line_config.add_line_settings({CHIP_PIN_NUM}, settings);
+   
+   gpiod::line_settings settings;
+   settings.set_direction(gpiod::line_direction::OUTPUT);
+
+   gpiod::request_config config;
+   config.set_consumer("led-test");
+
+   gpiod::line_config line_cfg;
+   line_cfg.add_line_settings({CHIP_PIN_NUM}, settings);
 
    auto request = chip.request_lines(config, line_cfg);
    bool led_on = false;
