@@ -209,6 +209,12 @@ int main() {
    gpiod::line led_pin = chip.get_line(CHIP_PIN_NUM);
    bool led_on = false;
 
+   led_pin.request({
+        "output_led",
+        gpiod::line_request::DIRECTION_OUTPUT,
+        0
+    });
+
    std::cout << "initialization successful" << std::endl;
 
    std::string state_active;
