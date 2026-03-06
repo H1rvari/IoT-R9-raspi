@@ -13,7 +13,7 @@
 #define CHAR_ID_REMOTE_PRESS_BUTTON "19B10001-E8F2-537E-4F6C-D104768A1214"
 #define CHAR_ID_SENSOR_TRIGGER "abcdef01-1234-5678-1234-56789abcdef0"
 
-#define SERVICE_ID_REMOTE "19B10000-E8F2-537E-4F6C-D104768A1214"
+#define SERVICE_ID_REMOTE "19b10000-e8f2-537e-4f6c-d104768a1214"
 #define SERVICE_ID_SENSOR "12345678-1234-5678-1234-56789abcdef0"
 
 /*
@@ -206,6 +206,10 @@ bool ble_init(){
    if (!adapter_found){
       std::cout << "The correct adapter not found" << std::endl;
       return false;
+   }
+
+   if (!adapter.is_powered()) {
+    adapter.set_powered(true);
    }
    
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
