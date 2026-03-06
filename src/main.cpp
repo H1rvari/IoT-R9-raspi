@@ -110,7 +110,7 @@ void connect_device(SimpleBLE::Peripheral pref){
 void broadcast_state(){
    std::cout << "Broadcasting state:\n";
    std::vector<uint8_t> data_out = {is_active, is_armed, alarm_on};
-   remote.write_command(SERVICE_ID_REMOTE, CHAR_ID_STATUS_UPDATE, kvn::bytearray(data_out));
+   remote.write(SERVICE_ID_REMOTE, CHAR_ID_STATUS_UPDATE, "Send status",  kvn::bytearray(data_out));
 }
 
 void update_actuator(){
