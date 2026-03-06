@@ -84,7 +84,12 @@ void connect_device(SimpleBLE::Peripheral pref){
 
    try {
       pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
-      pref.indicate(pref.identifier(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+      if (pref_type == REMOTE){
+         pref.indicate(pref.identifier(), CHAR_ID_REMOTE_PRESS_BUTTON, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+      }
+      else {
+         pref.indicate(pref.identifier(), CHAR_ID_SENSOR_TRIGGER, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+      }
    } catch (const std::exception& e){
       std::cout << "UUID matched but initialization failed:\n" << e.what() << std::endl;
       return;
@@ -96,7 +101,7 @@ void connect_device(SimpleBLE::Peripheral pref){
 void broadcast_state(){
    std::cout << "Broadcasting state:\n";
    std::vector<uint8_t> data_out = {is_active, is_armed, alarm_on};
-   remote.write_command(SERVICE_ID, CHAR_ID, kvn::bytearray(data_out));
+   remote.write_command(SERVICE_ID_REMOTE, CHAR_ID_STATUS_UPDATE, kvn::bytearray(data_out));
 }
 
 void update_actuator(){
