@@ -74,7 +74,7 @@ void connect_device(SimpleBLE::Peripheral pref){
       //std::cout << "invalid identifier: " << pref.identifier() << " address: " << pref.address() << "\n";
       return;
    }
-   std::cout "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
+   std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
 
    try {
       pref.connect();
