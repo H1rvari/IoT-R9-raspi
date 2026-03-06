@@ -54,8 +54,6 @@ bool alarm_on = false;
 
 void connect_device(SimpleBLE::Peripheral pref){
 
-   std::cout << "Device found\n";
-
    device_type pref_type;
 
 
