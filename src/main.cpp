@@ -74,7 +74,7 @@ void connect_device(SimpleBLE::Peripheral pref){
    }
    std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
    adapter.scan_stop();
-   //sleep(2);
+   sleep(2);
    if (!pref.is_connectable()){
       std::cout << pref.identifier() << " is not connectable\n";
       adapter.scan_start();
