@@ -207,10 +207,6 @@ bool ble_init(){
       std::cout << "The correct adapter not found" << std::endl;
       return false;
    }
-
-   if (!adapter.is_powered()) {
-    adapter.set_powered(true);
-   }
    
    adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
    adapter.set_callback_on_scan_start([]() { std::cout << "Scan started." << std::endl; });
