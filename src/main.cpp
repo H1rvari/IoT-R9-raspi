@@ -12,8 +12,10 @@
 #define CHAR_ID "4429945c5ba54627bb532f09089e59a7"
 #define SERVICE_ID "538437edfb424103a9e7f17634200e3b"
 
+/*
 #define CHIP_NAME "gpiochip0"
 #define CHIP_PIN_NUM 23
+*/
 
 typedef enum {REMOTE, SENSOR} device_type;
 
