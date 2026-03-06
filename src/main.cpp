@@ -92,8 +92,8 @@ void connect_device(SimpleBLE::Peripheral pref){
    try {
       pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
       if (pref_type == REMOTE){
-         broadcast_state();
          pref.notify(SERVICE_ID_REMOTE, CHAR_ID_REMOTE_PRESS_BUTTON, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+         broadcast_state();
       }
       else {
          pref.notify(SERVICE_ID_SENSOR, CHAR_ID_SENSOR_TRIGGER, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
