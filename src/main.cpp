@@ -81,6 +81,7 @@ void connect_device(SimpleBLE::Peripheral pref){
       std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
       return;
    }
+   std::cout << "Connecting successfull\n";
 
    try {
       pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
