@@ -6,7 +6,7 @@
 
 #define ADAPTER_ID "hci0"
 
-#define REMOTE_UUID "45:3C:C1:BF:57:5A"
+#define REMOTE_UUID "BurglaryRemote"
 #define SENSOR_UUID "33:53:F9:85:68:94"
 
 #define CHAR_ID_STATUS_UPDATE "19b10002-e8f2-537e-4f6c-d104768a1214"
@@ -57,7 +57,7 @@ void connect_device(SimpleBLE::Peripheral pref){
    device_type pref_type;
 
 
-   if (pref.address() == REMOTE_UUID){
+   if (pref.identifier() == REMOTE_UUID){
       remote = pref;
       pref_type = REMOTE;
       remote_initialized = true;
