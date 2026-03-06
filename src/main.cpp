@@ -6,11 +6,15 @@
 
 #define ADAPTER_ID "hci0"
 
-#define REMOTE_UUID "placeholder"
-#define SENSOR_UUID "placeholder"
+#define REMOTE_UUID "BurglaryRemote"
+#define SENSOR_UUID "NanoMotion"
 
-#define CHAR_ID "4429945c5ba54627bb532f09089e59a7"
-#define SERVICE_ID "538437edfb424103a9e7f17634200e3b"
+#define CHAR_ID_STATUS_UPDATE "19B10002-E8F2-537E-4F6C-D104768A1214"
+#define CHAR_ID_REMOTE_PRESS_BUTTON "19B10001-E8F2-537E-4F6C-D104768A1214"
+#define CHAR_ID_SENSOR_TRIGGER "abcdef01-1234-5678-1234-56789abcdef0"
+
+#define SERVICE_ID_REMOTE "19B10000-E8F2-537E-4F6C-D104768A1214"
+#define SERVICE_ID_SENSOR "12345678-1234-5678-1234-56789abcdef0"
 
 /*
 #define CHIP_NAME "gpiochip0"
@@ -55,19 +59,19 @@ void connect_device(SimpleBLE::Peripheral pref){
    device_type pref_type;
 
 
-   if (pref.address() == REMOTE_UUID){
+   if (pref.identifier() == REMOTE_UUID){
       remote = pref;
       pref_type = REMOTE;
       remote_initialized = true;
    }
-   else if (pref.address() == SENSOR_UUID){
+   else if (pref.identifier() == SENSOR_UUID){
       sensor = pref;
       pref_type = SENSOR;
       is_active = true;
       sensor_initialized = true;
    }
    else{
-      std::cout << "invalid UUID: " << pref.address() << "\n";
+      std::cout << "invalid identifier: " << pref.identifier() << "\n";
       return;
    }
 
@@ -80,7 +84,7 @@ void connect_device(SimpleBLE::Peripheral pref){
 
    try {
       pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
-      pref.indicate(pref.address(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+      pref.indicate(pref.identifier(), CHAR_ID, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
    } catch (const std::exception& e){
       std::cout << "UUID matched but initialization failed:\n" << e.what() << std::endl;
       return;
