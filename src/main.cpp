@@ -77,12 +77,14 @@ void connect_device(SimpleBLE::Peripheral pref){
    sleep(2);
    if (!pref.is_connectable()){
       std::cout << pref.identifier() << " is not connectable\n";
+      adapter.scan_start();
       return;
    }
    try {
       pref.connect();
    } catch (const std::exception& e){
       std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
+      adapter.scan_start();
       return;
    }
    std::cout << "Connecting successfull\n";
