@@ -6,8 +6,8 @@
 
 #define ADAPTER_ID "hci0"
 
-#define REMOTE_UUID "BurglaryRemote"
-#define SENSOR_UUID "NanoMotion"
+#define REMOTE_UUID "45:3C:C1:BF:57:5A"
+#define SENSOR_UUID "33:53:F9:85:68:94"
 
 #define CHAR_ID_STATUS_UPDATE "19B10002-E8F2-537E-4F6C-D104768A1214"
 #define CHAR_ID_REMOTE_PRESS_BUTTON "19B10001-E8F2-537E-4F6C-D104768A1214"
@@ -59,19 +59,19 @@ void connect_device(SimpleBLE::Peripheral pref){
    device_type pref_type;
 
 
-   if (pref.identifier() == REMOTE_UUID){
+   if (pref.address() == REMOTE_UUID){
       remote = pref;
       pref_type = REMOTE;
       remote_initialized = true;
    }
-   else if (pref.identifier() == SENSOR_UUID){
+   else if (pref.address() == SENSOR_UUID){
       sensor = pref;
       pref_type = SENSOR;
       is_active = true;
       sensor_initialized = true;
    }
    else{
-      std::cout << "invalid identifier: " << pref.identifier() << "\n";
+      std::cout << "invalid identifier: " << pref.identifier() << " address: " << pref.address() << "\n";
       return;
    }
 
