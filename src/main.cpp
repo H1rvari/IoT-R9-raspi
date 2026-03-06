@@ -73,7 +73,7 @@ void connect_device(SimpleBLE::Peripheral pref){
       return;
    }
    std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
-   sleep(2);
+   sleep(5);
 
    try {
       pref.connect();
