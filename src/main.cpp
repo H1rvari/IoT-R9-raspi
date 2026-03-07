@@ -33,7 +33,7 @@ device_model expected_devices[] = {
    {SENSOR_UUID, SENSOR}
 };
 
-void connect_device(SimpleBLE::Peripheral pref);
+void connect_device(SimpleBLE::Peripheral& pref);
 void request_handler(SimpleBLE::ByteArray req, device_type type);
 void disconnect_handler(device_type type);
 void update_actuator();
