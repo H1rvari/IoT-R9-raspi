@@ -52,7 +52,7 @@ bool is_armed = false;
 bool alarm_on = false;
 
 
-void connect_device(SimpleBLE::Peripheral& pref){
+void connect_device(SimpleBLE::Peripheral pref){
 
    device_type pref_type;
 
@@ -210,7 +210,7 @@ bool ble_init(){
       return false;
    }
    
-   adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral& pref){connect_device(pref);});
+   adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
    adapter.set_callback_on_scan_start([]() { std::cout << "Scan started." << std::endl; });
    adapter.set_callback_on_scan_stop([]() { std::cout << "Scan stopped." << std::endl; });
    adapter.power_on();
