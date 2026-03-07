@@ -94,7 +94,7 @@ void connect_device(SimpleBLE::Peripheral& pref){
 
    if (!pref.is_connected()){
       try {
-         pref.connect();
+         pref_type == REMOTE ? remote->connect() : sensor->connect();
       } catch (const std::exception& e){
          std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
          adapter.scan_start();
@@ -110,11 +110,11 @@ void connect_device(SimpleBLE::Peripheral& pref){
    try {
       pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
       if (pref_type == REMOTE){
-         pref.notify(pref.services()[0].uuid(), pref.services()[0].characteristics()[0].uuid(), [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+         remote->notify(pref.services()[0].uuid(), pref.services()[0].characteristics()[0].uuid(), [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
          broadcast_state();
       }
       else {
-         pref.notify(pref.services()[0].uuid(), pref.services()[0].characteristics()[0].uuid(), [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+         sensor->notify(pref.services()[0].uuid(), pref.services()[0].characteristics()[0].uuid(), [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
       }
    } catch (const std::exception& e){
       std::cout << "UUID matched but initialization failed:\n" << e.what() << std::endl;
