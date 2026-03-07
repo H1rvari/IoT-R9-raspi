@@ -88,7 +88,7 @@ void connect_device(SimpleBLE::Peripheral pref){
       return;
    }
    std::cout << "Connecting successfull\n";
-   sleep(1);
+   sleep(2);
 
    try {
       pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
