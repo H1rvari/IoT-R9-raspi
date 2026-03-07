@@ -69,7 +69,7 @@ void connect_device(SimpleBLE::Peripheral pref){
       sensor_initialized = true;
    }
    else{
-      //std::cout << "invalid identifier: " << pref.identifier() << " address: " << pref.address() << "\n";
+      std::cout << "invalid identifier: " << pref.identifier() << " address: " << pref.address() << "\n";
       return;
    }
    std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
