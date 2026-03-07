@@ -52,18 +52,18 @@ bool is_armed = false;
 bool alarm_on = false;
 
 
-void connect_device(SimpleBLE::Peripheral pref){
+void connect_device(SimpleBLE::Peripheral pref_temp){
 
    device_type pref_type;
    adapter.scan_stop();
 
-   if (pref.identifier() == REMOTE_UUID && !remote_initialized){
-      remote = pref;
+   if (pref_temp.identifier() == REMOTE_UUID && !remote_initialized){
+      remote = pref_temp;
       pref_type = REMOTE;
       remote_initialized = true;
    }
-   else if (pref.address() == SENSOR_UUID && !sensor_initialized){
-      sensor = pref;
+   else if (pref_temp.address() == SENSOR_UUID && !sensor_initialized){
+      sensor = pref_temp;
       pref_type = SENSOR;
       is_active = true;
       sensor_initialized = true;
@@ -73,6 +73,9 @@ void connect_device(SimpleBLE::Peripheral pref){
       adapter.scan_start();
       return;
    }
+   
+   SimpleBLE::Peripheral& pref = (pref_type == REMOTE) ? remote : sensor;
+
    std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
    sleep(2);
    if (!pref.is_connectable()){
@@ -115,6 +118,7 @@ void connect_device(SimpleBLE::Peripheral pref){
          break;
       } catch (const std::exception& e){
          std::cout << "UUID matched but initialization failed:\n" << e.what() << std::endl;
+         sleep(1);
          continue;
       }
    }
