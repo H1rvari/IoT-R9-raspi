@@ -104,7 +104,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    std::string characteristic = "";
    
    for (auto ser : pref.services()){
-      if (ser == SERVICE_ID_REMOTE || ser == SERVICE_ID_REMOTE){
+      if (ser.uuid() == SERVICE_ID_REMOTE || ser.uuid() == SERVICE_ID_REMOTE){
          service = ser.uuid();
          characteristic = ser.characteristics()[0].uuid();
       }
