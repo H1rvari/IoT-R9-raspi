@@ -84,6 +84,13 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       return;
    }
 
+   for (auto ser : pref.services()){
+      std::cout << "Service " << ser.uuid() << "\n";
+      for (auto cha : ser.characteristics()){
+         std::cout << "Characteristic: " << cha.uuid() << "\n";
+      }
+   }
+
    while(true){
 
       try {
