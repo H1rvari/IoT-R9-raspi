@@ -82,7 +82,7 @@ void connect_device(SimpleBLE::Peripheral pref){
    }
 
    if (pref.services()[0].uuid() == SERVICE_ID_SENSOR){
-      std::cout << "Service found: "<< pref.services()[0].uuid() << "\n";
+      std::cout << "Service found: "<< pref.services()[0].uuid() << "\nCharacteristic: " << pref.services()[0].characteristics()[0].uuid() << "\n";
    }
    else if (pref.services()[0].uuid() == SERVICE_ID_REMOTE){
       std::cout << "Service found:"  << pref.services()[0].uuid() << "\n";
