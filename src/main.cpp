@@ -90,6 +90,9 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       std::cout << "No services found\n";
       return;
    }
+   for (auto ser : services){
+      std::cout << "Service found : " << ser.uuid() << "\n";
+   }
 
    while(true){
 
@@ -109,7 +112,9 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    std::string characteristic = "";
    
    for (auto ser : services){
+      std::cout << "service found: " << ser.uuid() << "\n";
       if (ser.uuid() == SERVICE_ID_REMOTE || ser.uuid() == SERVICE_ID_REMOTE){
+         std::cout << "Service match found\n"; 
          service = ser.uuid();
          characteristic = ser.characteristics()[0].uuid();
       }
