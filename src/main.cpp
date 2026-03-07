@@ -87,7 +87,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    while(true){
 
       try {
-         pref_type == REMOTE ? remote.connect() : sensor.connect();
+         pref.connect();
          break;
       } catch (const std::exception& e){
          std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
