@@ -113,7 +113,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    
    for (auto ser : services){
       std::cout << "service found: " << ser.uuid() << "\n";
-      if (ser.uuid() == SERVICE_ID_REMOTE || ser.uuid() == SERVICE_ID_REMOTE){
+      if (ser.uuid() == SERVICE_ID_REMOTE || ser.uuid() == SERVICE_ID_SENSOR){
          std::cout << "Service match found\n"; 
          service = ser.uuid();
          characteristic = ser.characteristics()[0].uuid();
