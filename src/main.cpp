@@ -41,8 +41,8 @@ void broadcast_state();
 
 
 SimpleBLE::Adapter adapter;
-SimpleBLE::Peripheral remote;
-SimpleBLE::Peripheral sensor;
+SimpleBLE::Peripheral* remote;
+SimpleBLE::Peripheral* sensor;
 
 bool remote_initialized = false;
 bool sensor_initialized = false;
@@ -58,12 +58,12 @@ void connect_device(SimpleBLE::Peripheral pref){
 
 
    if (pref.identifier() == REMOTE_UUID){
-      remote = pref;
+      remote = &pref;
       pref_type = REMOTE;
       remote_initialized = true;
    }
    else if (pref.address() == SENSOR_UUID){
-      sensor = pref;
+      sensor = &pref;
       pref_type = SENSOR;
       is_active = true;
       sensor_initialized = true;
@@ -111,7 +111,7 @@ void connect_device(SimpleBLE::Peripheral pref){
 void broadcast_state(){
    std::cout << "Broadcasting state:\n";
    std::vector<uint8_t> data_out = {is_active, is_armed, alarm_on};
-   remote.write(SERVICE_ID_REMOTE, CHAR_ID_STATUS_UPDATE, "Send status",  kvn::bytearray(data_out));
+   remote->write(SERVICE_ID_REMOTE, CHAR_ID_STATUS_UPDATE, "Send status",  kvn::bytearray(data_out));
 }
 
 void update_actuator(){
@@ -130,7 +130,7 @@ void disconnect_handler(device_type type){
       is_active = false;
       is_armed = false;
       alarm_on = false;
-      if  (remote.is_connected()){
+      if  (remote->is_connected()){
          broadcast_state();
       }
       std::cout << "Sensor disconnected\n";
@@ -172,7 +172,7 @@ void request_handler(SimpleBLE::ByteArray req, device_type type){
          }
 
       }
-      if (remote.is_connected()){
+      if (remote->is_connected()){
          try {
             broadcast_state();
          } catch (const std::exception& e){
@@ -240,10 +240,10 @@ int main() {
       std::cout << "Current state:    " << state_active << "    " << state_armed << "    " << state_alarm << "\n";
 
       if (sensor_initialized && remote_initialized){
-         if (adapter.scan_is_active() && (remote.is_connected() && sensor.is_connected())){
+         if (adapter.scan_is_active() && (remote->is_connected() && sensor->is_connected())){
             adapter.scan_stop();
          }
-         else if (!adapter.scan_is_active() && !(remote.is_connected() && sensor.is_connected())){
+         else if (!adapter.scan_is_active() && !(remote->is_connected() && sensor->is_connected())){
             adapter.scan_start();
          }
       }
