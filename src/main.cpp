@@ -93,7 +93,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    for (auto ser : services){
       std::cout << "Service found : " << ser.uuid() << "\n";
       for (auto cha : ser.characteristics()){
-         std::cout << "With characteristic: " cha.uuid() << "\n";
+         std::cout << "With characteristic: " << cha.uuid() << "\n";
       }
    }
 
