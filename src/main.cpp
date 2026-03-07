@@ -52,7 +52,7 @@ bool is_armed = false;
 bool alarm_on = false;
 
 
-void connect_device(SimpleBLE::Peripheral pref){
+void connect_device(SimpleBLE::Peripheral& pref){
 
    device_type pref_type;
 
