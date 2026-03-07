@@ -52,7 +52,7 @@ bool is_armed = false;
 bool alarm_on = false;
 
 
-void connect_device(SimpleBLE::Peripheral pref){
+void connect_device(SimpleBLE::Peripheral& pref){
 
    device_type pref_type;
 
@@ -92,12 +92,17 @@ void connect_device(SimpleBLE::Peripheral pref){
       return;
    }
 
-   try {
-      pref.connect();
-   } catch (const std::exception& e){
-      std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
-      adapter.scan_start();
-      return;
+   if (!pref.is_connected()){
+      try {
+         pref.connect();
+      } catch (const std::exception& e){
+         std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
+         adapter.scan_start();
+         return;
+      }
+   }
+   else {
+      std::cout << "Already connected\n";
    }
    std::cout << "Connecting successfull\n";
    sleep(2);
@@ -222,7 +227,7 @@ bool ble_init(){
       return false;
    }
    
-   adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral pref){connect_device(pref);});
+   adapter.set_callback_on_scan_found([](SimpleBLE::Peripheral& pref){connect_device(pref);});
    adapter.set_callback_on_scan_start([]() { std::cout << "Scan started." << std::endl; });
    adapter.set_callback_on_scan_stop([]() { std::cout << "Scan stopped." << std::endl; });
    adapter.power_on();
