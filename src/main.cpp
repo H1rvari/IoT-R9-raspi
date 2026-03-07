@@ -69,11 +69,11 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       sensor_initialized = true;
    }
    else{
-      std::cout << "invalid identifier: " << pref.identifier() << " address: " << pref.address() << "\n";
+      std::cout << "invalid identifier: " << pref_temp.identifier() << " address: " << pref_temp.address() << "\n";
       adapter.scan_start();
       return;
    }
-   
+
    SimpleBLE::Peripheral& pref = (pref_type == REMOTE) ? remote : sensor;
 
    std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
