@@ -135,7 +135,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
             broadcast_state();
          }
          else {
-            sensor.notify(service, characteristic, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+            sensor.notify(service, CHAR_ID_SENSOR_TRIGGER, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
          }
          break;
       } catch (const std::exception& e){
