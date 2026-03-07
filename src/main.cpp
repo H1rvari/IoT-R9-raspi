@@ -91,19 +91,17 @@ void connect_device(SimpleBLE::Peripheral pref){
       std::cout << "Service not found: " << pref.services()[0].uuid() << "\n";
       return;
    }
+   while(true){
 
-   if (!pref.is_connected()){
       try {
          pref_type == REMOTE ? remote.connect() : sensor.connect();
+         break;
       } catch (const std::exception& e){
          std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
-         adapter.scan_start();
-         return;
+         continue;
       }
    }
-   else {
-      std::cout << "Already connected\n";
-   }
+
    std::cout << "Connecting successfull\n";
    sleep(2);
 
