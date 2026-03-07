@@ -70,6 +70,7 @@ void connect_device(SimpleBLE::Peripheral pref){
    }
    else{
       std::cout << "invalid identifier: " << pref.identifier() << " address: " << pref.address() << "\n";
+      adapter.scan_start();
       return;
    }
    std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
