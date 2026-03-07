@@ -57,12 +57,12 @@ void connect_device(SimpleBLE::Peripheral pref){
    device_type pref_type;
    adapter.scan_stop();
 
-   if (pref.identifier() == REMOTE_UUID){
+   if (pref.identifier() == REMOTE_UUID && !remote_initialized){
       remote = pref;
       pref_type = REMOTE;
       remote_initialized = true;
    }
-   else if (pref.address() == SENSOR_UUID){
+   else if (pref.address() == SENSOR_UUID && !sensor_initialized){
       sensor = pref;
       pref_type = SENSOR;
       is_active = true;
