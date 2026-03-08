@@ -90,11 +90,27 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       std::cout << "No services found\n";
       return;
    }
+   bool service_found = false;
    for (auto ser : services){
-      std::cout << "Service found : " << ser.uuid() << "\n";
+      if (ser.uuid() != SERVICE_ID_REMOTE && ser.uuid() != SERVICE_ID_SENSOR) continue;
+      std::cout << "Service found\n";
       for (auto cha : ser.characteristics()){
-         std::cout << "With characteristic: " << cha.uuid() << "\n";
+         if (cha.uuid() == CHAR_ID_SENSOR_TRIGGER || cha.uuid() == CHAR_ID_REMOTE_PRESS_BUTTON){
+            std::cout << "Valid service found: " << ser.uuid() << "  With characteristic: " << cha.uuid() << "\n";
+            service_found = true;
+            break
+         }
       }
+   }
+   if (!service_found){
+      std::cout << "Service not found, aborting...\n";
+      if (pref_type == REMOTE){
+         remote_initialized = false;
+      }
+      else {
+         sensor_initialized = false;
+      }
+      return;
    }
 
    while(true){
