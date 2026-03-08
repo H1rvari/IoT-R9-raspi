@@ -105,7 +105,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    if (pref->services().empty()){
       std::cout << "No services found\n";
       adapter.scan_start();
-      pref->disconnect()
+      pref->disconnect();
       sensor_initialized = false;
       return;
    }
