@@ -103,19 +103,9 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    std::string service = "";
    std::string characteristic = "";
 
-   std::vector<SimpleBLE::Service> services = pref->services();
-
-   if (services.empty()){
-      std::cout << "No services found\n";
-      adapter.scan_start();
-      pref->disconnect();
-      sensor_initialized = false;
-      return;
-   }
-
    while (true){
       sleep(1);
-      for (auto ser : services){
+      for (auto ser : pref->services()){
          std::cout << "Service found" << ser.uuid() <<"\n";
          if (ser.uuid() != SERVICE_ID_REMOTE && ser.uuid() != SERVICE_ID_SENSOR) continue;
          for (auto cha : ser.characteristics()){
@@ -137,7 +127,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
             broadcast_state();
          }
          else {
-            sensor.notify(service, CHAR_ID_SENSOR_TRIGGER, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
+            sensor.notify(service, characteristic, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
          }
          break;
       } catch (const std::exception& e){
