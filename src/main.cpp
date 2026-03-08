@@ -84,6 +84,9 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       return;
    }
 
+   std::string service = "";
+   std::string characteristic = "";
+
    while (true){
       sleep(1);
       for (auto ser : pref.services()){
@@ -114,9 +117,6 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
 
    std::cout << "Connecting successfull\n";
    sleep(2);
-
-   std::string service = "";
-   std::string characteristic = "";
 
 /*
    if (pref.services().empty()){
