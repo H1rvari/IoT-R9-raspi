@@ -84,6 +84,23 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       return;
    }
 
+   while (true){
+      sleep(1);
+      for (auto ser : pref.services()){
+         std::cout << "Service found" << ser.uuid() <<"\n";
+         if (ser.uuid() != SERVICE_ID_REMOTE && ser.uuid() != SERVICE_ID_SENSOR) continue;
+         for (auto cha : ser.characteristics()){
+            std::cout << "Characteristic found: " << cha.uuid() << "\n";
+            if (cha.uuid() == CHAR_ID_SENSOR_TRIGGER || cha.uuid() == CHAR_ID_REMOTE_PRESS_BUTTON){
+               service = ser.uuid();
+               characteristic = cha.uuid();
+               break;
+            }
+         }
+      }
+   }
+   sleep(2);
+
    while(true){
 
       try {
@@ -101,28 +118,14 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    std::string service = "";
    std::string characteristic = "";
 
-
+/*
    if (pref.services().empty()){
       std::cout << "No services found\n";
       adapter.scan_start();
       return;
    }
+*/
 
-   while (true){
-      sleep(1);
-      for (auto ser : pref.services()){
-         std::cout << "Service found" << ser.uuid() <<"\n";
-         if (ser.uuid() != SERVICE_ID_REMOTE && ser.uuid() != SERVICE_ID_SENSOR) continue;
-         for (auto cha : ser.characteristics()){
-            std::cout << "Characteristic found: " << cha.uuid() << "\n";
-            if (cha.uuid() == CHAR_ID_SENSOR_TRIGGER || cha.uuid() == CHAR_ID_REMOTE_PRESS_BUTTON){
-               service = ser.uuid();
-               characteristic = cha.uuid();
-               break;
-            }
-         }
-      }
-   }
 
    while (true){
       try {
