@@ -84,13 +84,6 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       return;
    }
 
-   std::vector<SimpleBLE::Service> services = pref.services();
-   if (services.size() == 0){
-      sensor_initialized = false;
-      std::cout << "No services found\n";
-      return;
-   }
-
    while(true){
 
       try {
@@ -110,7 +103,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    
   while (true){
       sleep(1);
-      for (auto& ser : services){
+      for (auto& ser : pref.services()){
          if (ser.uuid() != SERVICE_ID_REMOTE && ser.uuid() != SERVICE_ID_SENSOR) continue;
          std::cout << "Service found" << ser.uuid() <<"\n";
          for (auto& cha : ser.characteristics()){
