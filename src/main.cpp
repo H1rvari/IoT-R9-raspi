@@ -74,22 +74,44 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       return;
    }
 
-   SimpleBLE::Peripheral& pref = (pref_type == REMOTE) ? remote : sensor;
+   SimpleBLE::Peripheral* pref = (pref_type == REMOTE) ? &remote : &sensor;
 
-   std::cout << "Device found: " << pref.address() << "    " << pref.identifier() << std::endl;
+   std::cout << "Device found: " << pref->address() << "    " << pref->identifier() << std::endl;
    sleep(2);
-   if (!pref.is_connectable()){
-      std::cout << pref.identifier() << " is not connectable\n";
+   if (!pref->is_connectable()){
+      std::cout << pref->identifier() << " is not connectable\n";
       adapter.scan_start();
       return;
    }
 
+   while(true){
+
+      try {
+         pref->connect();
+         break;
+      } catch (const std::exception& e){
+         std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
+         continue;
+      }
+   }
+
+   std::cout << "Connecting successfull\n";
+   sleep(2);
+
    std::string service = "";
    std::string characteristic = "";
 
+
+   if (pref->services().empty()){
+      std::cout << "No services found\n";
+      adapter.scan_start();
+      pref->disconnect()
+      return;
+   }
+
    while (true){
       sleep(1);
-      for (auto ser : pref.services()){
+      for (auto ser : pref->services()){
          std::cout << "Service found" << ser.uuid() <<"\n";
          if (ser.uuid() != SERVICE_ID_REMOTE && ser.uuid() != SERVICE_ID_SENSOR) continue;
          for (auto cha : ser.characteristics()){
@@ -102,34 +124,10 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
          }
       }
    }
-   sleep(2);
-
-   while(true){
-
-      try {
-         pref.connect();
-         break;
-      } catch (const std::exception& e){
-         std::cout << "UUID matched but connecting failed:\n" << e.what() << std::endl;
-         continue;
-      }
-   }
-
-   std::cout << "Connecting successfull\n";
-   sleep(2);
-
-/*
-   if (pref.services().empty()){
-      std::cout << "No services found\n";
-      adapter.scan_start();
-      return;
-   }
-*/
-
 
    while (true){
       try {
-         pref.set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
+         pref->set_callback_on_disconnected([pref_type](){disconnect_handler(pref_type);});
          if (pref_type == REMOTE){
             remote.notify(service, characteristic, [pref_type] (SimpleBLE::ByteArray bytes){request_handler(bytes, pref_type);});
             broadcast_state();
