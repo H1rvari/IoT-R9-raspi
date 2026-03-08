@@ -102,8 +102,8 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
    std::string characteristic = "";
 
 
-   if (pref.services().is_empty()){
-      std::cout << "No services found\n"
+   if (pref.services().empty()){
+      std::cout << "No services found\n";
       adapter.scan_start();
       return;
    }
