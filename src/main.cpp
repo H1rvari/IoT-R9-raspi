@@ -110,6 +110,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
       else {
          sensor_initialized = false;
       }
+      adapter.scan_on();
       return;
    }
 
