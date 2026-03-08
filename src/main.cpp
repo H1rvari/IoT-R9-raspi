@@ -98,7 +98,7 @@ void connect_device(SimpleBLE::Peripheral pref_temp){
          if (cha.uuid() == CHAR_ID_SENSOR_TRIGGER || cha.uuid() == CHAR_ID_REMOTE_PRESS_BUTTON){
             std::cout << "Valid service found: " << ser.uuid() << "  With characteristic: " << cha.uuid() << "\n";
             service_found = true;
-            break
+            break;
          }
       }
    }
