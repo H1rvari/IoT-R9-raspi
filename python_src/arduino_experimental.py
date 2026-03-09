@@ -1,5 +1,6 @@
 import asyncio
 import time
+import tracemalloc
 from bleak import BleakScanner, BleakClient
 
 # --- Configuration ---
@@ -104,10 +105,10 @@ async def manage_device(address, name):
             await asyncio.sleep(2)
 
 async def main():
-
+    tracemalloc.start()
     await asyncio.gather(
         asyncio.to_thread(manage_device, SENSOR_ADDR, "SENSOR"),
-        asyncio.to_thread(manage_devicek, REMOTE_ADDR, "REMOTE")
+        asyncio.to_thread(manage_device, REMOTE_ADDR, "REMOTE")
     )
 
         
