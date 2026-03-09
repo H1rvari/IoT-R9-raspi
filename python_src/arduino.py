@@ -100,10 +100,13 @@ async def manage_device(address, name):
             await alarm.update_remote_status()
             await asyncio.sleep(2)
 
+def sync_wrapper(addr, name):
+    return asyncio.run(manage_device(addr, name))
 
 async def main():
 
-    asyncio.run(asyncio.to_thread(manage_device(REMOTE_ADDR, "REMOTE")))
+    await asyncio.to_thread(sync_wrapper, REMOTE_ADDR, "REMOTE")
+
     await manage_device(SENSOR_ADDR, "SENSOR")
         
 
