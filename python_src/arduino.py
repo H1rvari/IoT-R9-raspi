@@ -101,7 +101,7 @@ async def manage_device(address, name):
             await asyncio.sleep(2)
 
 def sync_wrapper(addr, name):
-    return asyncio.run(manage_device(addr, name))
+    asyncio.run(manage_device(addr, name))
 
 async def main():
 
