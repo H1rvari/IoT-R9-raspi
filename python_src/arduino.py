@@ -56,7 +56,7 @@ def on_remote_press(sender, data):
         asyncio.create_task(alarm.update_remote_status())
 
 # --- Connection Manager ---
-async def manage_device_remote(address, name, parent):
+async def manage_device_remote(address, name):
     """Handles connection, notification setup, and reconnection for one device."""
     while True:
         #async with alarm.lock: # Ensure we don't collide during connection attempts
