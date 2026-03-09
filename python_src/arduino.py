@@ -83,6 +83,7 @@ async def manage_device_remote(address, name):
                 print("Loop 1 reached")
                 while client.is_connected:
                     await asyncio.sleep(1)
+                    return
 
         except Exception as e:
             print(f"Error in {name} loop: {e}")
@@ -121,10 +122,10 @@ async def manage_device_sensor(address, name):
                         alarm.remote_client = client
                         await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
                     
-                    await manage_device_remote(REMOTE_ADDR, "REMOTE")
 
                     print("Loop 2 reached")
                     while client.is_connected:
+                        await manage_device_remote(REMOTE_ADDR, "REMOTE")
                         await asyncio.sleep(1)
 
             except Exception as e:
