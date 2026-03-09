@@ -17,6 +17,7 @@ CHAR_ID_SENSOR_TRIGGER = "abcdef01-1234-5678-1234-56789abcdef0"
 # --- State Management ---
 class BurglarySystem:
     def __init__(self):
+        self.remote_connected = False
         self.is_active = False  # Sensor connected
         self.is_armed = False   # Armed state
         self.alarm_on = False   # Alarm trigger
@@ -56,9 +57,10 @@ def on_remote_press(sender, data):
         asyncio.create_task(alarm.update_remote_status())
 
 # --- Connection Manager ---
-async def manage_device_remote(address, name):
+async def manage_device_remote(address, name, parent):
     """Handles connection, notification setup, and reconnection for one device."""
     while True:
+
         #async with alarm.lock: # Ensure we don't collide during connection attempts
         print(f"Scanning for {name} ({address})...")
         device = await BleakScanner.find_device_by_address(address, timeout=5.0)
@@ -79,11 +81,12 @@ async def manage_device_remote(address, name):
                     await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
                 
                 await alarm.update_remote_status()
-
-                print("Loop 1 reached")
+                alarm.remote_connected = True
+                
                 while client.is_connected:
                     await asyncio.sleep(1)
-                    return
+                    if not  parent.is_connected():
+                        return
 
         except Exception as e:
             print(f"Error in {name} loop: {e}")
@@ -121,12 +124,9 @@ async def manage_device_sensor(address, name):
                     else:
                         alarm.remote_client = client
                         await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
-                    
 
-                    print("Loop 2 reached")
-                    while client.is_connected:
-                        await manage_device_remote(REMOTE_ADDR, "REMOTE")
-                        await asyncio.sleep(1)
+                    await manage_device_remote(REMOTE_ADDR, "REMOTE", client)
+                        
 
             except Exception as e:
                 print(f"Error in {name} loop: {e}")
