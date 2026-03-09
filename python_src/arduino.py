@@ -120,7 +120,10 @@ async def manage_device_sensor(address, name):
                         alarm.remote_client = client
                         await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
                     
+                    print("1")
                     await alarm.update_remote_status()
+                    print("2")
+                    
 
                     while client.is_connected:
                         await asyncio.sleep(1)
