@@ -3,7 +3,7 @@ import logging
 from bleak import BleakScanner, BleakClient
 
 # --- Configuration ---
-REMOTE_NAME = "BurglaryRemote"
+REMOTE_ADDR = "45:3C:C1:BF:57:5A"
 SENSOR_ADDR = "33:53:F9:85:68:94"
 
 SERVICE_ID_REMOTE = "19b10000-e8f2-537e-4f6c-d104768a1214"
@@ -93,9 +93,9 @@ async def manage_sensor():
 
 async def manage_remote():
     while True:
-        print(f"Scanning for Remote: {REMOTE_NAME}")
+        print(f"Scanning for Remote: {REMOTE_ADDR}")
         device = await BleakScanner.find_device_by_filter(
-            lambda d, ad: d.name == REMOTE_NAME
+            lambda d, ad: d.name == REMOTE_ADDR
         )
         if device:
             try:
