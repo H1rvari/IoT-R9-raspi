@@ -18,6 +18,8 @@ CHAR_ID_SENSOR_TRIGGER = "abcdef01-1234-5678-1234-56789abcdef0"
 # --- State Management ---
 class BurglarySystem:
     def __init__(self):
+        self.remote_connected = False
+        self.sensor_connected = False
         self.is_active = False  # Sensor connected
         self.is_armed = False   # Armed state
         self.alarm_on = False   # Alarm trigger
@@ -56,6 +58,19 @@ def on_remote_press(sender, data):
         print(f"Remote Toggle -> Armed: {alarm.is_armed}, Alarm: {alarm.alarm_on}")
         asyncio.create_task(alarm.update_remote_status())
 
+def disconnect_handler(name):
+    if name == "SENSOR":
+        alarm.sensor_connected =  False
+        alarm.is_active = False
+        alarm.is_armed = False
+        alarm.alarm_on = False
+    else:
+        alarm.remote_client = None
+        alarm.remote_connected = False
+    
+    print(f"{name} disconnected. Re-scanning...")
+
+
 # --- Connection Manager ---
 async def manage_device(address, name):
     """Handles connection, notification setup, and reconnection for one device."""
@@ -65,51 +80,42 @@ async def manage_device(address, name):
             print(f"Scanning for {name} ({address})...")
             device = await BleakScanner.find_device_by_address(address, timeout=5.0)
             
-            if not device:
+            if device:
                 await asyncio.sleep(2)
-                continue
+                break
 
-        try:
-            async with BleakClient(device) as client:
-                print(f"Connected to {name}")
-                
-                if address == SENSOR_ADDR:
-                    alarm.is_active = True
-                    await client.start_notify(CHAR_ID_SENSOR_TRIGGER, on_sensor_data)
-                else:
-                    alarm.remote_client = client
-                    await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
-                
-                await alarm.update_remote_status()
-
-                if name == "SENSOR":
-                    await manage_device(REMOTE_ADDR, "REMOTE")
-
-                else:
-                    while client.is_connected:
-                        await asyncio.sleep(1)
-                
-
-        except Exception as e:
-            print(f"Error in {name} loop: {e}")
-        finally:
-            if address == SENSOR_ADDR:
-                alarm.is_active = False
-                alarm.is_armed = False
-                alarm.alarm_on = False
-            else:
-                alarm.remote_client = None
+    try:
+        async with BleakClient(device, disconnect_callback=disconnect_handler(name)) as client:
+            print(f"Connected to {name}")
             
-            print(f"{name} disconnected. Re-scanning...")
+            if address == SENSOR_ADDR:
+                alarm.is_active = True
+                await client.start_notify(CHAR_ID_SENSOR_TRIGGER, on_sensor_data)
+            else:
+                alarm.remote_client = client
+                await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
+            
             await alarm.update_remote_status()
-            await asyncio.sleep(2)
+
+            if name == "SENSOR":
+                alarm.sensor_connected = True
+            else:
+                alarm.remote_connected = True
+
+    except Exception as e:
+        print(f"Error in {name} loop: {e}")
+
 
 async def main():
-    tracemalloc.start()
-    await asyncio.gather(
-        asyncio.to_thread(manage_device, SENSOR_ADDR, "SENSOR"),
-        asyncio.to_thread(manage_device, REMOTE_ADDR, "REMOTE")
-    )
+    
+    while True:
+        await asyncio.sleep(2)
+
+        if not alarm.remote_connected:
+            await manage_device(REMOTE_ADDR, "REMOTE")
+        
+        if not alarm.sensor_connected:
+            await manage_device(SENSOR_ADDR, "SENSOR")
 
         
 
