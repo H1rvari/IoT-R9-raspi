@@ -86,6 +86,9 @@ async def manage_device_remote(address, name, parent):
                 while client.is_connected:
                     await asyncio.sleep(1)
                     if not  parent.is_connected():
+                        alarm.is_active = False
+                        alarm.is_armed = False
+                        alarm.alarm_on = True
                         return
 
         except Exception as e:
@@ -109,6 +112,10 @@ async def manage_device_sensor(address, name):
         async with alarm.lock: # Ensure we don't collide during connection attempts
             print(f"Scanning for {name} ({address})...")
             device = await BleakScanner.find_device_by_address(address, timeout=5.0)
+
+            alarm.is_active = True
+            alarm.is_armed = False
+            alarm.alarm_on = False
             
             if not device:
                 await asyncio.sleep(2)
