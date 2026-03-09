@@ -141,8 +141,8 @@ async def manage_device_sensor(address, name):
 async def main():
     # Run Remote and Sensor managers concurrently
     await asyncio.gather(
-        manage_device_remote(REMOTE_ADDR, "REMOTE"),
-        manage_device_sensor(SENSOR_ADDR, "SENSOR")
+        manage_device_sensor(SENSOR_ADDR, "SENSOR"),
+        manage_device_remote(REMOTE_ADDR, "REMOTE")
     )
 
 
