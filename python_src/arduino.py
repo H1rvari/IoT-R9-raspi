@@ -1,118 +1,120 @@
 import asyncio
-import time
 from bleak import BleakScanner, BleakClient
 
-# --- Configuration ---
+# Configuration
 REMOTE_ADDR = "45:3C:C1:BF:57:5A"
 SENSOR_ADDR = "33:53:F9:85:68:94"
 
 # UUIDs
-SERVICE_ID_REMOTE = "19b10000-e8f2-537e-4f6c-d104768a1214"
 CHAR_ID_REMOTE_PRESS = "19b10001-e8f2-537e-4f6c-d104768a1214"
 CHAR_ID_STATUS_UPDATE = "19b10002-e8f2-537e-4f6c-d104768a1214"
-
-SERVICE_ID_SENSOR = "12345678-1234-5678-1234-56789abcdef0"
 CHAR_ID_SENSOR_TRIGGER = "abcdef01-1234-5678-1234-56789abcdef0"
 
-# --- State Management ---
-class BurglarySystem:
+class AlarmSystem:
     def __init__(self):
-        self.is_active = False  # Sensor connected
-        self.is_armed = False   # Armed state
-        self.alarm_on = False   # Alarm trigger
+        self.is_active = False   # Sensor status
+        self.is_armed = False    # Armed status
+        self.alarm_on = False    # Trigger status
         self.remote_client = None
-        self.lock = asyncio.Lock() # Prevents simultaneous DBus commands
+        self.lock = asyncio.Lock() # Crucial for Raspberry Pi BlueZ stability
 
-    async def update_remote_status(self):
-        """Writes [active, armed, alarm] to the remote."""
+    async def broadcast(self):
+        """Updates the Remote with the current system state."""
         if self.remote_client and self.remote_client.is_connected:
-            payload = bytes([int(self.is_active), int(self.is_armed), int(self.alarm_on)])
             try:
+                payload = bytes([int(self.is_active), int(self.is_armed), int(self.alarm_on)])
                 await self.remote_client.write_gatt_char(CHAR_ID_STATUS_UPDATE, payload)
-                print(f"Sent status to Remote: {list(payload)}")
+                print(f"-> Broadcast: Active={self.is_active}, Armed={self.is_armed}, Alarm={self.alarm_on}")
             except Exception as e:
-                print(f"Status broadcast failed: {e}")
+                print(f"Broadcast failed: {e}")
 
-alarm = BurglarySystem()
+alarm = AlarmSystem()
 
 # --- Callbacks ---
-def on_sensor_data(sender, data):
+def sensor_callback(sender, data):
     if data[0] == 0xFF and alarm.is_active and alarm.is_armed:
         alarm.alarm_on = True
-        print("!!! ALARM TRIGGERED BY SENSOR !!!")
-        asyncio.create_task(alarm.update_remote_status())
+        print("!!! ALARM TRIGGERED !!!")
+        asyncio.create_task(alarm.broadcast())
 
-def on_remote_press(sender, data):
+def remote_callback(sender, data):
     if data[0] == 0xFF:
         if not alarm.is_active:
+            alarm.is_armed, alarm.alarm_on = False, False
+        else:
+            alarm.is_armed = not alarm.is_armed
+            if not alarm.is_armed: alarm.alarm_on = False
+        
+        print(f"Remote Press: Armed={alarm.is_armed}")
+        asyncio.create_task(alarm.broadcast())
+
+# --- Function 1: Managing the Session ---
+async def manage_connection(client, name):
+    """Handles notifications and keeps the session alive."""
+    try:
+        print(f"[{name}] Setting up notifications...")
+        if name == "SENSOR":
+            alarm.is_active = True
+            await client.start_notify(CHAR_ID_SENSOR_TRIGGER, sensor_callback)
+        else:
+            alarm.remote_client = client
+            await client.start_notify(CHAR_ID_REMOTE_PRESS, remote_callback)
+        
+        # Initial state sync
+        await alarm.broadcast()
+
+        # Keep alive loop
+        while client.is_connected:
+            await asyncio.sleep(1)
+            
+    except Exception as e:
+        print(f"[{name}] Session error: {e}")
+    finally:
+        # Reset specific states on disconnect
+        if name == "SENSOR":
+            alarm.is_active = False
             alarm.is_armed = False
             alarm.alarm_on = False
         else:
-            alarm.is_armed = not alarm.is_armed
-            if not alarm.is_armed:
-                alarm.alarm_on = False
+            alarm.remote_client = None
         
-        print(f"Remote Toggle -> Armed: {alarm.is_armed}, Alarm: {alarm.alarm_on}")
-        asyncio.create_task(alarm.update_remote_status())
+        print(f"[{name}] Connection closed.")
+        await alarm.broadcast()
 
-# --- Connection Manager ---
-async def manage_device(address, name):
-    """Handles connection, notification setup, and reconnection for one device."""
+# --- Function 2: The Reconnection Loop ---
+async def connect_loop(address, name):
+    """Handles discovery and the physical connection handshake."""
+    print(f"Starting connection loop for {name}...")
     while True:
-        async with alarm.lock: # Ensure we don't collide during connection attempts
-            print(f"Scanning for {name} ({address})...")
-            device = await BleakScanner.find_device_by_address(address, timeout=5.0)
-            
+        try:
+            # Discovery (Un-locked to allow both tasks to scan)
+            device = await BleakScanner.find_device_by_address(address, timeout=10.0)
             if not device:
                 await asyncio.sleep(2)
                 continue
 
-            try:
+            # Connection (Locked to prevent Pi BlueZ 'InProgress' collision)
+            async with alarm.lock:
+                print(f"[{name}] Found! Handshaking...")
                 async with BleakClient(device) as client:
-                    print(f"Connected to {name}")
-                    
-                    if address == SENSOR_ADDR:
-                        alarm.is_active = True
-                        await client.start_notify(CHAR_ID_SENSOR_TRIGGER, on_sensor_data)
-                    else:
-                        alarm.remote_client = client
-                        await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
-                    
-                    await alarm.update_remote_status()
+                    # Pass the active client to the Manager function
+                    await manage_connection(client, name)
 
-                    # Keep alive until disconnect
-                    while client.is_connected:
-                        await asyncio.sleep(1)
-            except Exception as e:
-                print(f"Error in {name} loop: {e}")
-            finally:
-                if address == SENSOR_ADDR:
-                    alarm.is_active = False
-                    alarm.is_armed = False
-                    alarm.alarm_on = False
-                else:
-                    alarm.remote_client = None
-                
-                print(f"{name} disconnected. Re-scanning...")
-                await alarm.update_remote_status()
-                await asyncio.sleep(2)
-
+        except Exception as e:
+            print(f"[{name}] Connection failed: {e}")
+        
+        # Wait before retrying to prevent CPU spikes
+        await asyncio.sleep(5)
 
 async def main():
-    # Run Remote and Sensor managers concurrently
-    #await asyncio.gather(
-    #    manage_device(REMOTE_ADDR, "REMOTE"),
-    # manage_device(SENSOR_ADDR, "SENSOR")
-    #)
-    find_remote = asyncio.create_task( manage_device(REMOTE_ADDR, "REMOTE"))
-    find_sensor = asyncio.create_task( manage_device(SENSOR_ADDR, "SENSOR"))
-
-    await find_remote
-    await find_sensor
-
+    # Schedule both loops
+    await asyncio.gather(
+        connect_loop(SENSOR_ADDR, "SENSOR"),
+        connect_loop(REMOTE_ADDR, "REMOTE")
+    )
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nSystem Disarmed. Exiting.")
+        print("System shutdown.")
