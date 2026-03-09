@@ -98,10 +98,14 @@ async def manage_device(address, name):
 
 async def main():
     # Run Remote and Sensor managers concurrently
-    await asyncio.gather(
-        #manage_device(REMOTE_ADDR, "REMOTE"),
-        manage_device(SENSOR_ADDR, "SENSOR")
-    )
+    #await asyncio.gather(
+    #    manage_device(REMOTE_ADDR, "REMOTE"),
+    #    manage_device(SENSOR_ADDR, "SENSOR")
+    #)
+    sensor_task = asyncio.create_task(manage_device(SENSOR_ADDR, "SENSOR"))
+    remote_task = asyncio.create_task(manage_device(REMOTE_ADDR, "REMOTE"))
+
+    await asyncio.gather(sensor_task, remote_task)
 
 if __name__ == "__main__":
     try:
