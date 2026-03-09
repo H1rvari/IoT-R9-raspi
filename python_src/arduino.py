@@ -1,4 +1,5 @@
 import asyncio
+import time
 from bleak import BleakScanner, BleakClient
 
 # --- Configuration ---
@@ -100,6 +101,7 @@ async def manage_device_remote(address, name):
 async def manage_device_sensor(address, name):
     """Handles connection, notification setup, and reconnection for one device."""
     while True:
+        time.sleep(1)
         async with alarm.lock: # Ensure we don't collide during connection attempts
             print(f"Scanning for {name} ({address})...")
             device = await BleakScanner.find_device_by_address(address, timeout=5.0)
@@ -141,8 +143,8 @@ async def manage_device_sensor(address, name):
 async def main():
     # Run Remote and Sensor managers concurrently
     await asyncio.gather(
-        manage_device_sensor(SENSOR_ADDR, "SENSOR"),
-        manage_device_remote(REMOTE_ADDR, "REMOTE")
+        manage_device_remote(REMOTE_ADDR, "REMOTE"),
+        manage_device_sensor(SENSOR_ADDR, "SENSOR")
     )
 
 
