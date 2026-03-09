@@ -1,8 +1,6 @@
 import asyncio
 import time
 from bleak import BleakScanner, BleakClient
-import threading
-import tracemalloc
 
 # --- Configuration ---
 REMOTE_ADDR = "45:3C:C1:BF:57:5A"
@@ -82,9 +80,14 @@ async def manage_device(address, name):
                     await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
                 
                 await alarm.update_remote_status()
+
+                if name == "SESNOR":
+                    await manage_device(REMOTE_ADDR, "REMOTE")
+
+                else:
+                    while client.is_connected:
+                        await asyncio.sleep(1)
                 
-                while client.is_connected:
-                    await asyncio.sleep(1)
 
         except Exception as e:
             print(f"Error in {name} loop: {e}")
@@ -102,10 +105,7 @@ async def manage_device(address, name):
 
 async def main():
 
-    asyncio.gather(
-        await manage_device(REMOTE_ADDR, "REMOTE"),
-        await manage_device(SENSOR_ADDR, "SENSOR")
-    )
+    await manage_device(SENSOR_ADDR, "SENSOR")
         
 
 if __name__ == "__main__":
