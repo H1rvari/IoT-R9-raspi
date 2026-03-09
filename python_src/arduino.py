@@ -1,6 +1,7 @@
 import asyncio
 import time
 from bleak import BleakScanner, BleakClient
+import ctypes
 
 # --- Configuration ---
 REMOTE_ADDR = "45:3C:C1:BF:57:5A"
@@ -132,7 +133,7 @@ async def manage_device_sensor(address, name):
                         alarm.remote_client = client
                         await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
 
-                    await manage_device_remote(REMOTE_ADDR, "REMOTE", client)
+                    await manage_device_remote(REMOTE_ADDR, "REMOTE", ctypes.pointer(client))
                         
 
             except Exception as e:
