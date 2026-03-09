@@ -80,11 +80,9 @@ async def manage_device_remote(address, name, parent):
                 
                 await alarm.update_remote_status()
 
-                # Keep alive until disconnect
+                print("Loop 1 reached")
                 while client.is_connected:
                     await asyncio.sleep(1)
-                    if not parent.is_connected():
-                        return
 
         except Exception as e:
             print(f"Error in {name} loop: {e}")
@@ -123,8 +121,9 @@ async def manage_device_sensor(address, name):
                         alarm.remote_client = client
                         await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
                     
-                    await manage_device_remote(REMOTE_ADDR, "REMOTE", client)
+                    await manage_device_remote(REMOTE_ADDR, "REMOTE")
 
+                    print("Loop 2 reached")
                     while client.is_connected:
                         await asyncio.sleep(1)
 
