@@ -106,7 +106,7 @@ async def main():
     tracemalloc.start()
 
     remote = threading.Thread(target=manage_device, args=(REMOTE_ADDR, "REMOTE"))
-    sensor = threading.Thread(targnet=manage_device, args=(SENSOR_ADDR, "SESNOR"))
+    sensor = threading.Thread(tarnet=manage_device, args=(SENSOR_ADDR, "SESNOR"))
 
     remote.start()
     sensor.start()
