@@ -121,7 +121,7 @@ async def manage_device_sensor(address, name):
                         await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
                     
                     print("1")
-                    await alarm.update_remote_status()
+                    await manage_device_sensor(REMOTE_ADDR, "REMOTE")
                     print("2")
                     
 
