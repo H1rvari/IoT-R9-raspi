@@ -103,8 +103,8 @@ async def manage_device(address, name):
 async def main():
 
     asyncio.gather(
-        manage_device(REMOTE_ADDR, "REMOTE"),
-        manage_device(SENSOR_ADDR, "SENSOR")
+        await manage_device(REMOTE_ADDR, "REMOTE"),
+        await manage_device(SENSOR_ADDR, "SENSOR")
     )
         
 
