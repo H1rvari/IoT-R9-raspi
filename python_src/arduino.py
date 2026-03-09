@@ -2,6 +2,7 @@ import asyncio
 import time
 from bleak import BleakScanner, BleakClient
 import threading
+import tracemalloc
 
 # --- Configuration ---
 REMOTE_ADDR = "45:3C:C1:BF:57:5A"
@@ -102,6 +103,8 @@ async def manage_device(address, name):
 
 async def main():
 
+    tracemalloc.start()
+
     remote = threading.Thread(target=manage_device, args=(REMOTE_ADDR, "REMOTE"))
     sensor = threading.Thread(targnet=manage_device, args=(SENSOR_ADDR, "SESNOR"))
 
@@ -111,4 +114,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
