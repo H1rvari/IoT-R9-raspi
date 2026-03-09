@@ -103,8 +103,8 @@ async def manage_device(address, name):
 
 async def main():
 
-    await asyncio.to_thread(manage_device(REMOTE_ADDR, "REMOTE"))
-    await asyncio.to_thread(manage_device(SENSOR_ADDR, "SENSOR"))
+    asyncio.run(asyncio.to_thread(manage_device(REMOTE_ADDR, "REMOTE")))
+    await manage_device(SENSOR_ADDR, "SENSOR")
         
 
 if __name__ == "__main__":
