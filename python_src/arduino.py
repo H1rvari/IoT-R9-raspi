@@ -144,7 +144,7 @@ async def manage_device_sensor(address, name):
 
 async def main():
 
-    manage_device_sensor(SENSOR_ADDR, "SENSOR")
+    await manage_device_sensor(SENSOR_ADDR, "SENSOR")
     
 
 
