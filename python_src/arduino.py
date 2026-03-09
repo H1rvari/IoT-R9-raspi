@@ -86,7 +86,7 @@ async def manage_device_remote(address, name, parent):
                 
                 while client.is_connected:
                     await asyncio.sleep(1)
-                    if not  parent.is_connected():
+                    if not  parent.contets.is_connected():
                         alarm.is_active = False
                         alarm.is_armed = False
                         alarm.alarm_on = True
