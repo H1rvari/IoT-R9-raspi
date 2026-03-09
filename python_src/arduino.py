@@ -128,8 +128,6 @@ async def manage_device_sensor(address, name):
                     while client.is_connected:
                         await asyncio.sleep(1)
 
-                    # Keep alive until disconnect
-                    await manage_device_remote(REMOTE_ADDR, "REMOTE"),
             except Exception as e:
                 print(f"Error in {name} loop: {e}")
             finally:
