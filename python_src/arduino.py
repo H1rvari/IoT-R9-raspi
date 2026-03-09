@@ -56,7 +56,7 @@ def on_remote_press(sender, data):
         asyncio.create_task(alarm.update_remote_status())
 
 # --- Connection Manager ---
-async def manage_device_remote(address, name):
+async def manage_device_remote(address, name, parent):
     """Handles connection, notification setup, and reconnection for one device."""
     while True:
         #async with alarm.lock: # Ensure we don't collide during connection attempts
@@ -83,6 +83,9 @@ async def manage_device_remote(address, name):
                 # Keep alive until disconnect
                 while client.is_connected:
                     await asyncio.sleep(1)
+                    if not parent.is_connected():
+                        return
+
         except Exception as e:
             print(f"Error in {name} loop: {e}")
         finally:
@@ -120,10 +123,7 @@ async def manage_device_sensor(address, name):
                         alarm.remote_client = client
                         await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
                     
-                    print("1")
-                    await manage_device_remote(REMOTE_ADDR, "REMOTE")
-                    print("2")
-                    
+                    await manage_device_remote(REMOTE_ADDR, "REMOTE", client)
 
                     while client.is_connected:
                         await asyncio.sleep(1)
