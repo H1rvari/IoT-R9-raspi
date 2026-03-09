@@ -81,7 +81,7 @@ async def manage_device(address, name):
                 
                 await alarm.update_remote_status()
 
-                if name == "SESNOR":
+                if name == "SENSOR":
                     await manage_device(REMOTE_ADDR, "REMOTE")
 
                 else:
