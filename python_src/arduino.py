@@ -103,7 +103,7 @@ async def manage_device(address, name):
 async def main():
 
     remote = threading.Thread(target=manage_device, args=(REMOTE_ADDR, "REMOTE"))
-    sensor = threading.Thread(targnet=manage_device, args=(SENSOR_ADDR, "SESNOR"))7
+    sensor = threading.Thread(targnet=manage_device, args=(SENSOR_ADDR, "SESNOR"))
 
     remote.start()
     sensor.start()
