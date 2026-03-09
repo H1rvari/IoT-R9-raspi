@@ -103,15 +103,9 @@ async def manage_device(address, name):
 
 async def main():
 
-    tracemalloc.start()
-
-    remote = threading.Thread(target=manage_device, args=(REMOTE_ADDR, "REMOTE"))
-    sensor = threading.Thread(target=manage_device, args=(SENSOR_ADDR, "SESNOR"))
-
-    await remote.start()
-    await sensor.start()
+    await asyncio.to_thread(manage_device(REMOTE_ADDR, "REMOTE"))
+    await asyncio.to_thread(manage_device(SENSOR_ADDR, "SENSOR"))
         
-
 
 if __name__ == "__main__":
     asyncio.run(main())
