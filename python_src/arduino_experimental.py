@@ -87,7 +87,7 @@ async def connect_device(address, name):
         print(f"Scanning for {name} ({address})...")
         device = await BleakScanner.find_device_by_address(address, timeout=5.0)
         
-        if device:
+        if not device:
             await asyncio.sleep(2)
             return
 
