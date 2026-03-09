@@ -1,7 +1,7 @@
 import asyncio
 import time
 from bleak import BleakScanner, BleakClient
-import ctypes
+import threading
 
 # --- Configuration ---
 REMOTE_ADDR = "45:3C:C1:BF:57:5A"
@@ -102,10 +102,11 @@ async def manage_device(address, name):
 
 async def main():
 
-    asyncio.gather(
-        await manage_device(REMOTE_ADDR, "REMOTE"),
-        await manage_device(SENSOR_ADDR, "SENSOR")
-    )
+    remote = threading.Thread(target=manage_device, args=(REMOTE_ADDR, "REMOTE"))
+    sensor = threading.Thread(targnet=manage_device, args=(SENSOR_ADDR, "SESNOR"))7
+
+    remote.start()
+    sensor.start()
         
 
 
