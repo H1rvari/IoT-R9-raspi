@@ -3,6 +3,9 @@ import time
 import tracemalloc
 from bleak import BleakScanner, BleakClient
 
+REMOTE = "Remote"
+SENSOR = "Sensor"
+
 # --- Configuration ---
 REMOTE_ADDR = "45:3C:C1:BF:57:5A"
 SENSOR_ADDR = "33:53:F9:85:68:94"
@@ -20,14 +23,14 @@ class BurglarySystem:
     def __init__(self):
         self.remote_connected = False
         self.sensor_connected = False
-        self.is_active = False  # Sensor connected
-        self.is_armed = False   # Armed state
-        self.alarm_on = False   # Alarm trigger
+        self.is_active = False  
+        self.is_armed = False  
+        self.alarm_on = False 
         self.remote_client = None
         self.lock = asyncio.Lock() # Prevents simultaneous DBus commands
 
+    # sends status to remote when status changes
     async def update_remote_status(self):
-        """Writes [active, armed, alarm] to the remote."""
         if self.remote_client and self.remote_client.is_connected:
             payload = bytes([int(self.is_active), int(self.is_armed), int(self.alarm_on)])
             try:
@@ -36,54 +39,59 @@ class BurglarySystem:
             except Exception as e:
                 print(f"Status broadcast failed: {e}")
 
-alarm = BurglarySystem()
-
-# --- Callbacks ---
+# sensor signal callback
 def on_sensor_data(sender, data):
     if data[0] == 0xFF and alarm.is_active and alarm.is_armed:
         alarm.alarm_on = True
         print("!!! ALARM TRIGGERED BY SENSOR !!!")
         asyncio.create_task(alarm.update_remote_status())
 
+# remote signal callback
 def on_remote_press(sender, data):
-    if data[0] == 0xFF:
-        if not alarm.is_active:
-            alarm.is_armed = False
-            alarm.alarm_on = False
-        else:
-            alarm.is_armed = not alarm.is_armed
-            if not alarm.is_armed:
-                alarm.alarm_on = False
-        
-        print(f"Remote Toggle -> Armed: {alarm.is_armed}, Alarm: {alarm.alarm_on}")
-        asyncio.create_task(alarm.update_remote_status())
 
+    if not data[0] == 0xFF:
+        return
+    
+    if alarm.is_active:
+        alarm.is_armed = not alarm.is_armed
+        if not alarm.is_armed:
+            alarm.alarm_on = False
+    else:
+        alarm.is_armed = False
+        alarm.alarm_on = False
+    
+    print(f"Remote signal recieved\nStatus: Armed: {alarm.is_armed}, Alarm: {alarm.alarm_on}")
+    asyncio.create_task(alarm.update_remote_status())
+
+# disconnect callback
 def disconnect_handler(name):
-    if name == "SENSOR":
+    if name == SENSOR:
         alarm.sensor_connected =  False
         alarm.is_active = False
         alarm.is_armed = False
         alarm.alarm_on = False
+        asyncio.create_task(alarm.update_remote_status())
+
     else:
         alarm.remote_client = None
         alarm.remote_connected = False
     
-    print(f"{name} disconnected. Re-scanning...")
+    print(f"{name} disconnected.")
 
 
-# --- Connection Manager ---
-async def manage_device(address, name):
-    """Handles connection, notification setup, and reconnection for one device."""
-    while True:
+# handles connectiong and initialization
+async def connect_device(address, name):
 
-        async with alarm.lock: # Ensure we don't collide during connection attempts
-            print(f"Scanning for {name} ({address})...")
-            device = await BleakScanner.find_device_by_address(address, timeout=5.0)
-            
-            if device:
-                await asyncio.sleep(2)
-                break
+    # connect
+    async with alarm.lock: 
+        print(f"Scanning for {name} ({address})...")
+        device = await BleakScanner.find_device_by_address(address, timeout=5.0)
+        
+        if device:
+            await asyncio.sleep(2)
+            return
 
+    # initialize
     try:
         async with BleakClient(device, disconnect_callback=disconnect_handler(name)) as client:
             print(f"Connected to {name}")
@@ -95,9 +103,10 @@ async def manage_device(address, name):
                 alarm.remote_client = client
                 await client.start_notify(CHAR_ID_REMOTE_PRESS, on_remote_press)
             
-            await alarm.update_remote_status()
+            if alarm.remote_connected:
+                await alarm.update_remote_status()
 
-            if name == "SENSOR":
+            if name == SENSOR:
                 alarm.sensor_connected = True
             else:
                 alarm.remote_connected = True
@@ -111,15 +120,15 @@ async def main():
     while True:
         await asyncio.sleep(2)
 
-        if not alarm.remote_connected:
-            await manage_device(REMOTE_ADDR, "REMOTE")
-        
         if not alarm.sensor_connected:
-            await manage_device(SENSOR_ADDR, "SENSOR")
+            await connect_device(SENSOR_ADDR, SENSOR)
 
+        if not alarm.remote_connected:
+            await connect_device(REMOTE_ADDR, REMOTE)
         
 
 if __name__ == "__main__":
+    alarm = BurglarySystem()
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
